@@ -19,10 +19,10 @@ def create_token(data: Dict[str, Any], expires_delta: timedelta, scope: str) -> 
     return encoded_jwt
 
 
-def verify_token(token: str, expected_scope: str) ->Optional[Dict[str, Any]]:
+def decode_token(token: str, expected_scope: str = "access") -> Optional[Dict[str, Any]]:
     try:
-        payload = jwt.decode(token,settings.JWT_SECRET_KEY,settings.JWT_ALGO_SECRET_KEY)
-        if payload.get("scope")!=expected_scope:
+        payload = jwt.decode(token, settings.JWT_SECRET_KEY, algorithms=[settings.JWT_ALGO_SECRET_KEY])
+        if payload.get("scope") != expected_scope:
             return None
         return payload
     except jwt.JWTError:
