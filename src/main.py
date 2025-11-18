@@ -1,13 +1,18 @@
 from fastapi import FastAPI
+from fastapi.exceptions import RequestValidationError
 from fastapi.middleware.cors import CORSMiddleware
 from src.config import settings
+from src.core.error_handlers import domain_error_handler, validation_error_handler, unhandled_error_handler
+from src.core.errors import DomainError
 from src.core.logger import logger
+from src.users.router import users_router
+from src.files.router import files_router
 
 
 def create_app()->FastAPI:
     app=FastAPI(
         title=settings.APP_NAME,
-        debug=settings.DEBUG,
+        debug=settings.APP_DEBUG,
         version="0.0.1"
     )
 
@@ -18,6 +23,13 @@ def create_app()->FastAPI:
         allow_methods=["*"],
         allow_headers=["*"]
     )
+
+    app.add_exception_handler(DomainError, domain_error_handler)
+    app.add_exception_handler(RequestValidationError, validation_error_handler)
+    app.add_exception_handler(Exception, unhandled_error_handler)
+
+    app.include_router(users_router)
+    app.include_router(files_router)
 
     @app.on_event("startup")
     async def on_startup():
@@ -35,4 +47,3 @@ def create_app()->FastAPI:
 
 
 app = create_app()
-

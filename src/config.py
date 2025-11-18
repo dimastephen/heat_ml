@@ -1,6 +1,7 @@
 from pydantic_settings import BaseSettings, SettingsConfigDict
 from functools import lru_cache
 
+
 class Settings(BaseSettings):
     APP_NAME: str = "Heat Forecast"
     APP_ENV: str = "DEV"
@@ -18,6 +19,13 @@ class Settings(BaseSettings):
     JWT_ACCESS_TIME_MINS: int = 15
     JWT_REFRESH_TIME_DAYS: int = 7
 
+    #FILES
+    FILE_STORAGE_PATH: str = "uploads"
+    FILE_PREPARED_PATH: str = "prepared"
+
+    #QUEUE
+    REDIS_URL: str = "redis://localhost:6379/0"
+
     #LOGGING
     LOG_LEVEL: str = "DEBUG"
     LOG_FILE: str = "logs/app.log"
@@ -27,5 +35,6 @@ class Settings(BaseSettings):
 @lru_cache
 def get_settings():
     return Settings()
+
 
 settings = get_settings()
