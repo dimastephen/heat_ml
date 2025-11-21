@@ -7,7 +7,7 @@ from uuid import UUID
 
 from redis import Redis
 from rq import Queue
-
+from sklearn.linear_model import LinearRegression
 from src.config import settings
 from src.database import PgSessionLocal
 from src.files.models import (
@@ -91,16 +91,31 @@ def merge_batch(batch_id: UUID):
         heat_data = pd.read_csv(consumption_path, sep=';', decimal='.')
         home_chars = pd.read_csv(houses_path, sep=';',decimal='.')
         merged_data = pd.merge(heat_data, temp_data, on='date', how='left')
-        final_data = pd.merge(merged_data, home_chars, on='address_uuid', how='left')
-        final_data.index = final_data['date']
-        final_data = final_data.drop(columns='date')
-        if "is_unreliable" in final_data.columns:
-            final_data = final_data.drop(columns='is_unreliable')
+        data = pd.merge(merged_data, home_chars, on='address_uuid', how='left')
+        data.index=data['date']
+        data=data.drop(columns=['date'])
+        data.index.name = 'date'
+        data['day_of_season'] = data.groupby('address_uuid')['date'].apply(
+            lambda group: group.apply(get_heating_day)).reset_index(level=0, drop=True)
+        data['heating_year'] = data['date'].dt.year
+        data.loc[data['date'].dt.month < 10, 'heating_year'] -= 1
+        data['day_sin'] = np.sin(2 * np.pi * data['day_of_season'] / 212)
+        data['day_cos'] = np.cos(2 * np.pi * data['day_of_season'] / 212)
+        static_num = ['build_year', 'floor_number', 'residential_area', 'roof_area_total', 'roof_area_metal',
+                      'roof_area_web', 'roof_area_piece_goods']
+        static_str = ['wall_type']
+        data[static_num] = data[static_num].fillna(-1)
+        data[static_str] = data[static_str].fillna('unknown')
+        data.interpolate(method='linear', limit_direction='both')
+
+        data = IQR_check(data)
+
+
         prepared_dir = _prepared_dir(batch_id)
         prepared_dir.mkdir(parents=True, exist_ok=True)
         output_path = prepared_dir / "prepared_dataset.csv"
 
-        final_data.to_csv(output_path, index=False)
+        data.to_csv(output_path, index=False)
         batch_repo.update(batch, {
             "status": BatchStatus.prepared.value,
             "prepared_path": str(output_path),
@@ -172,3 +187,43 @@ def _maybe_schedule_merge(
 def _prepared_dir(batch_id: UUID) -> Path:
     root = Path(settings.FILE_PREPARED_PATH)
     return root / str(batch_id)
+
+
+def get_heating_day(row):
+    # Начало отопительного сезона (1 октября)
+    year_start = pd.Timestamp(f'{row.year}-10-01')
+
+    # Если дата до 1 октября, то отопительный сезон был в прошлом году
+    if row < year_start:
+        year_start = pd.Timestamp(f'{row.year - 1}-10-01')
+
+    # Возвращаем количество дней с начала отопительного сезона
+    return (row - year_start).days + 1
+
+
+def IQR_check(data: pd.DataFrame) -> pd.DataFrame:
+    Q1 = data['value'].quantile(0.25)
+    Q3 = data['value'].quantile(0.75)
+    IQR = Q3 - Q1
+
+    # Определяем границы выбросов
+    lower_bound = Q1 - 1.5 * IQR
+    upper_bound = Q3 + 1.5 * IQR
+
+    # Определяем выбросы как значения, выходящие за пределы IQR и добавляем условие что значение не может быть ниже 0
+    data['is_anomaly'] = ((data['value'] < lower_bound) | (data['value'] > upper_bound) | (data['value'] < 0))
+
+    # Отбираем нормальные данные
+    normal_data = data[~data['is_anomaly']]
+    outlier_data = data[data['is_anomaly']]
+
+    # Обучение регрессии на нормальных данных
+    X_train = normal_data[['temp_avg', 'humidity_avg']]  # Другие признаки, которые объясняют 'value'
+    y_train = normal_data['value']
+    model = LinearRegression()
+    model.fit(X_train, y_train)
+
+    # Замена выбросов предсказанными значениями
+    X_outliers = outlier_data[['temp_avg', 'humidity_avg']]
+    data.loc[data['is_anomaly'], 'value'] = model.predict(X_outliers)
+    return data
