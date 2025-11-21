@@ -10,6 +10,7 @@ from dotenv import load_dotenv
 from src.config import settings
 from src.database import Base
 from src.users import models
+from src.files import models
 config = context.config
 config.set_main_option('sqlalchemy.url', settings.POSTGRES_URL)
 

@@ -22,6 +22,7 @@ class Settings(BaseSettings):
     #FILES
     FILE_STORAGE_PATH: str = "uploads"
     FILE_PREPARED_PATH: str = "prepared"
+    MODEL_STORAGE_PATH: str = "models"
 
     #QUEUE
     REDIS_URL: str = "redis://localhost:6379/0"

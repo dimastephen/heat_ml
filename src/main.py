@@ -7,6 +7,7 @@ from src.core.errors import DomainError
 from src.core.logger import logger
 from src.users.router import users_router
 from src.files.router import files_router
+from src.forecasts.router import forecasts_router
 
 
 def create_app()->FastAPI:
@@ -30,6 +31,7 @@ def create_app()->FastAPI:
 
     app.include_router(users_router)
     app.include_router(files_router)
+    app.include_router(forecasts_router)
 
     @app.on_event("startup")
     async def on_startup():

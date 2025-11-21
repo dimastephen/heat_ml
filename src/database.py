@@ -7,11 +7,13 @@ from typing import Generator, Generic, TypeVar, Type, Optional, Any
 
 from src.config import settings
 
-"""ts_engine =create_engine(settings.TIMESCALEDB_URL, echo=settings.APP_DEBUG, future=True)"""
 pg_engine = create_engine(settings.POSTGRES_URL, echo=settings.APP_DEBUG, future=True)
-
 PgSessionLocal = sessionmaker(bind=pg_engine,autoflush=False,autocommit=False, expire_on_commit=False)
-"""TsSessionLocal = sessionmaker(bind=ts_engine,autoflush=False,autocommit=False, pool_pre_ping=True)"""
+
+TsSessionLocal = None
+if settings.TIMESCALEDB_URL:
+    ts_engine = create_engine(settings.TIMESCALEDB_URL, echo=settings.APP_DEBUG, future=True)
+    TsSessionLocal = sessionmaker(bind=ts_engine, autoflush=False, autocommit=False, expire_on_commit=False)
 
 
 class Base(DeclarativeBase):
@@ -25,14 +27,16 @@ def get_pg_db() -> Generator[Session,None,None]:
     finally:
         db.close()
 
-"""
-def get_ts_db() -> Generator[Session,None,None]:
+def get_ts_db() -> Generator[Session, None, None]:
+    if TsSessionLocal is None:
+        # Fallback to primary Postgres if Timescale is not configured
+        yield from get_pg_db()
+        return
     db = TsSessionLocal()
     try:
         yield db
     finally:
         db.close()
-"""
 
 T = TypeVar("T", bound=Base)
 
