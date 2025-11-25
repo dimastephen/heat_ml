@@ -11,6 +11,7 @@ from src.config import settings
 from src.database import Base
 from src.users import models
 from src.files import models
+from src.reports import models
 config = context.config
 config.set_main_option('sqlalchemy.url', settings.POSTGRES_URL)
 

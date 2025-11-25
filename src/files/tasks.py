@@ -18,6 +18,9 @@ from src.files.models import (
     REQUIRED_FILE_TYPES,
 )
 from src.files.repository import FileUploadRepository, IngestionBatchRepository
+from src.reports.models import DataQualityReport
+from src.reports.repository import DataQualityReportRepository
+from src.reports.quality import build_quality_metrics
 
 logger = logging.getLogger(__name__)
 
@@ -32,6 +35,7 @@ def process_upload(upload_id: UUID):
     db = PgSessionLocal()
     file_repo = FileUploadRepository(db, FileUpload)
     batch_repo = IngestionBatchRepository(db, IngestionBatch)
+    report_repo = DataQualityReportRepository(db, DataQualityReport)
 
     upload = file_repo.get(upload_id)
     if not upload:
@@ -69,9 +73,11 @@ def merge_batch(batch_id: UUID):
     """
     Объединение трёх подготовленных файлов в единый датасет (заглушка).
     """
+
     db = PgSessionLocal()
     file_repo = FileUploadRepository(db, FileUpload)
     batch_repo = IngestionBatchRepository(db, IngestionBatch)
+    report_repo = DataQualityReportRepository(db, DataQualityReport)
 
     batch = batch_repo.get(batch_id)
     if not batch:
@@ -92,13 +98,18 @@ def merge_batch(batch_id: UUID):
         home_chars = pd.read_csv(houses_path, sep=';',decimal='.')
         merged_data = pd.merge(heat_data, temp_data, on='date', how='left')
         data = pd.merge(merged_data, home_chars, on='address_uuid', how='left')
-        data.index=data['date']
-        data=data.drop(columns=['date'])
-        data.index.name = 'date'
-        data['day_of_season'] = data.groupby('address_uuid')['date'].apply(
-            lambda group: group.apply(get_heating_day)).reset_index(level=0, drop=True)
+        data['date'] = pd.to_datetime(data['date'], errors='coerce')
+        data = data.sort_values(['address_uuid', 'date'])
+
+        # отопительный год: с 1 октября по 30 апреля
         data['heating_year'] = data['date'].dt.year
         data.loc[data['date'].dt.month < 10, 'heating_year'] -= 1
+
+        # начало сезона = 1 октября соответствующего отопительного года
+        season_start = pd.to_datetime(data['heating_year'].astype(str) + '-10-01',errors='coerce')
+
+        # номер дня сезона
+        data['day_of_season'] = (data['date'] - season_start).dt.days + 1
         data['day_sin'] = np.sin(2 * np.pi * data['day_of_season'] / 212)
         data['day_cos'] = np.cos(2 * np.pi * data['day_of_season'] / 212)
         static_num = ['build_year', 'floor_number', 'residential_area', 'roof_area_total', 'roof_area_metal',
@@ -106,10 +117,24 @@ def merge_batch(batch_id: UUID):
         static_str = ['wall_type']
         data[static_num] = data[static_num].fillna(-1)
         data[static_str] = data[static_str].fillna('unknown')
-        data.interpolate(method='linear', limit_direction='both')
+        data.interpolate(method='linear', limit_direction='both', inplace=True)
 
         data = IQR_check(data)
 
+        quality_metrics = build_quality_metrics(data)
+        existing_report = report_repo.get_by_batch(batch_id)
+        report_payload = {
+            "batch_id": batch.id,
+            "user_id": batch.user_id,
+            "metrics": quality_metrics,
+        }
+        if existing_report:
+            report_repo.update(existing_report, report_payload)
+        else:
+            report_repo.create(report_payload)
+
+        if 'is_anomaly' in data.columns:
+            data = data.drop(columns=['is_anomaly'])
 
         prepared_dir = _prepared_dir(batch_id)
         prepared_dir.mkdir(parents=True, exist_ok=True)
@@ -146,6 +171,8 @@ def _process_file(upload: FileUpload) -> Path:
         data = pd.read_csv(raw_path,sep=';',decimal='.')
         data.loc[data['is_unreliable'] == 1, 'value'] = np.nan
         data['value'] = data.groupby('address_uuid')['value'].transform(lambda x: x.interpolate(method='linear'))
+        if 'is_unreliable' in data.columns:
+            data = data.drop(columns=['is_unreliable'])
         data.to_csv(destination, index=False,sep=";",decimal='.')
     elif upload.file_type == FileType.temperature.value:
         destination = prepared_dir / "temperature_prepared.csv"
@@ -202,8 +229,12 @@ def get_heating_day(row):
 
 
 def IQR_check(data: pd.DataFrame) -> pd.DataFrame:
-    Q1 = data['value'].quantile(0.25)
-    Q3 = data['value'].quantile(0.75)
+    value_series = data['value'].dropna()
+    if value_series.empty:
+        return data
+
+    Q1 = value_series.quantile(0.25)
+    Q3 = value_series.quantile(0.75)
     IQR = Q3 - Q1
 
     # Определяем границы выбросов
@@ -214,8 +245,12 @@ def IQR_check(data: pd.DataFrame) -> pd.DataFrame:
     data['is_anomaly'] = ((data['value'] < lower_bound) | (data['value'] > upper_bound) | (data['value'] < 0))
 
     # Отбираем нормальные данные
-    normal_data = data[~data['is_anomaly']]
+    normal_data = data[~data['is_anomaly']].dropna(subset=['temp_avg', 'humidity_avg', 'value'])
     outlier_data = data[data['is_anomaly']]
+
+    if len(normal_data) < 10:
+        # слишком мало данных — просто возвращаем без замены выбросов
+        return data
 
     # Обучение регрессии на нормальных данных
     X_train = normal_data[['temp_avg', 'humidity_avg']]  # Другие признаки, которые объясняют 'value'
