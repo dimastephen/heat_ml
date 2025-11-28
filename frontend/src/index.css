@@ -1,0 +1,66 @@
+@import './styles/variables.css';
+
+html, body, #root {
+  height: 100%;
+}
+
+#root {
+  display: flex;
+  flex-direction: column;
+}
+
+.app-shell {
+  display: grid;
+  grid-template-columns: var(--sidebar-width) 1fr;
+  grid-template-rows: 1fr;
+  min-height: 100vh;
+}
+
+main {
+  padding: 24px clamp(16px, 3vw, 40px);
+  overflow: auto;
+  background: radial-gradient(circle at top left, rgba(105, 219, 124, 0.15), transparent 45%),
+    var(--color-bg);
+}
+
+.card {
+  background: var(--color-panel);
+  border: 1px solid var(--color-border);
+  border-radius: 16px;
+  padding: 20px;
+  box-shadow: 0 20px 35px rgba(0, 0, 0, 0.35);
+  backdrop-filter: blur(12px);
+}
+
+.table {
+  width: 100%;
+  border-spacing: 0;
+}
+
+.table th,
+.table td {
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--color-border);
+  text-align: left;
+}
+
+button.primary {
+  border: none;
+  background: var(--color-primary);
+  color: #04110a;
+  font-weight: 600;
+  padding: 10px 18px;
+  border-radius: 999px;
+  cursor: pointer;
+}
+
+input,
+select,
+textarea {
+  width: 100%;
+  padding: 10px 12px;
+  border-radius: 10px;
+  border: 1px solid var(--color-border);
+  background: rgba(22, 27, 46, 0.9);
+  color: var(--color-text);
+}

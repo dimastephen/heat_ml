@@ -23,6 +23,7 @@ class Settings(BaseSettings):
     FILE_STORAGE_PATH: str = "uploads"
     FILE_PREPARED_PATH: str = "prepared"
     MODEL_STORAGE_PATH: str = "models"
+    REPORT_OUTPUT_PATH: str = "reports/output"
 
     #QUEUE
     REDIS_URL: str = "redis://localhost:6379/0"
@@ -30,6 +31,10 @@ class Settings(BaseSettings):
     #LOGGING
     LOG_LEVEL: str = "DEBUG"
     LOG_FILE: str = "logs/app.log"
+
+    #API_WEATHER
+    API_KEY:str = ""
+    LOCATION:str = "Ulyanovsk"
 
     model_config = SettingsConfigDict(env_file=".env", env_file_encoding="UTF-8")
 

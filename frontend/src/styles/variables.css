@@ -1,0 +1,26 @@
+:root {
+  --color-bg: #0b0d17;
+  --color-panel: #161b2e;
+  --color-border: rgba(255, 255, 255, 0.08);
+  --color-primary: #69db7c;
+  --color-primary-muted: rgba(105, 219, 124, 0.15);
+  --color-text: #f2f4ff;
+  --color-text-muted: rgba(242, 244, 255, 0.65);
+  --sidebar-width: 260px;
+  --header-height: 64px;
+  font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: var(--color-bg);
+  color: var(--color-text);
+}
+
+a {
+  color: inherit;
+}

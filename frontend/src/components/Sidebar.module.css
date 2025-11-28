@@ -1,0 +1,40 @@
+.sidebar {
+  padding: 32px 24px;
+  background: linear-gradient(180deg, rgba(22, 27, 46, 0.95), rgba(5, 7, 18, 0.98));
+  border-right: 1px solid var(--color-border);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.brand {
+  font-size: 1.4rem;
+  font-weight: 700;
+  margin-bottom: 32px;
+}
+
+.sectionLabel {
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  font-size: 0.75rem;
+  color: var(--color-text-muted);
+  margin-bottom: 8px;
+}
+
+.link,
+.active {
+  padding: 10px 12px;
+  border-radius: 10px;
+  text-decoration: none;
+  color: var(--color-text-muted);
+  transition: background 0.2s;
+}
+
+.link:hover {
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.active {
+  color: #04110a;
+  background: var(--color-primary);
+}

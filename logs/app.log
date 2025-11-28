@@ -110,3 +110,612 @@
 [2025-11-24 14:16:18] [INFO] Heat Forecast - Application stopped[0m
 [2025-11-24 14:17:24] [INFO] Heat Forecast - Starting Heat Forecast on 0.0.0.0:8000[0m
 [2025-11-24 14:17:34] [INFO] Heat Forecast - Login succeeded[0m
+[2025-11-26 15:13:00] [INFO] Heat Forecast - Starting Heat Forecast on 0.0.0.0:8000[0m
+[2025-11-26 15:13:16] [INFO] Heat Forecast - Login succeeded[0m
+[2025-11-26 15:15:56] [INFO] Heat Forecast - Application stopped[0m
+[2025-11-26 15:16:02] [INFO] Heat Forecast - Starting Heat Forecast on 0.0.0.0:8000[0m
+[2025-11-26 15:16:28] [INFO] Heat Forecast - Application stopped[0m
+[2025-11-26 15:16:41] [INFO] Heat Forecast - Starting Heat Forecast on 0.0.0.0:8000[0m
+[2025-11-26 15:17:51] [INFO] Heat Forecast - Application stopped[0m
+[2025-11-26 15:17:56] [INFO] Heat Forecast - Starting Heat Forecast on 0.0.0.0:8000[0m
+[2025-11-26 15:18:13] [INFO] Heat Forecast - Application stopped[0m
+[2025-11-26 15:18:23] [INFO] Heat Forecast - Starting Heat Forecast on 0.0.0.0:8000[0m
+[2025-11-26 15:18:45] [WARNING] Heat Forecast - Domain error[0m
+[2025-11-26 15:19:47] [INFO] Heat Forecast - Application stopped[0m
+[2025-11-26 15:19:52] [INFO] Heat Forecast - Starting Heat Forecast on 0.0.0.0:8000[0m
+[2025-11-26 15:20:44] [INFO] Heat Forecast - Application stopped[0m
+[2025-11-26 15:20:56] [INFO] Heat Forecast - Starting Heat Forecast on 0.0.0.0:8000[0m
+[2025-11-26 15:21:03] [WARNING] Heat Forecast - Domain error[0m
+[2025-11-26 15:21:32] [WARNING] Heat Forecast - Domain error[0m
+[2025-11-26 15:21:43] [INFO] Heat Forecast - Application stopped[0m
+[2025-11-26 15:22:27] [INFO] Heat Forecast - Starting Heat Forecast on 0.0.0.0:8000[0m
+[2025-11-26 15:22:30] [WARNING] Heat Forecast - Domain error[0m
+[2025-11-26 15:23:07] [INFO] Heat Forecast - Application stopped[0m
+[2025-11-26 15:23:12] [INFO] Heat Forecast - Starting Heat Forecast on 0.0.0.0:8000[0m
+[2025-11-26 15:25:02] [INFO] Heat Forecast - Application stopped[0m
+[2025-11-26 15:25:09] [INFO] Heat Forecast - Starting Heat Forecast on 0.0.0.0:8000[0m
+[2025-11-26 15:25:32] [INFO] Heat Forecast - Login succeeded[0m
+[2025-11-26 15:25:57] [DEBUG] Heat Forecast - Ensuring Timescale hypertable exists[0m
+[2025-11-26 15:27:32] [INFO] Heat Forecast - Application stopped[0m
+[2025-11-26 15:27:37] [INFO] Heat Forecast - Starting Heat Forecast on 0.0.0.0:8000[0m
+[2025-11-26 15:29:55] [INFO] Heat Forecast - Login succeeded[0m
+[2025-11-26 15:30:23] [DEBUG] Heat Forecast - Ensuring Timescale hypertable exists[0m
+[2025-11-26 15:30:52] [DEBUG] Heat Forecast - Ensuring Timescale hypertable exists[0m
+[2025-11-26 15:31:45] [DEBUG] Heat Forecast - Ensuring Timescale hypertable exists[0m
+[2025-11-26 15:31:45] [INFO] Heat Forecast - Timescale hypertable ready[0m
+[2025-11-26 15:31:45] [INFO] Heat Forecast - Starting forecast job[0m
+[2025-11-26 15:31:46] [DEBUG] Heat Forecast - Loading prepared dataset[0m
+[2025-11-26 15:31:46] [INFO] Heat Forecast - Loaded dataset[0m
+[2025-11-26 15:31:46] [DEBUG] Heat Forecast - Feature columns prepared[0m
+[2025-11-26 15:31:46] [INFO] Heat Forecast - Unique houses detected[0m
+[2025-11-26 15:31:46] [DEBUG] Heat Forecast - Global scalers fitted[0m
+[2025-11-26 15:31:46] [INFO] Heat Forecast - Built train/test datasets[0m
+[2025-11-26 15:33:18] [INFO] Heat Forecast - Model training finished[0m
+[2025-11-26 15:33:19] [INFO] Heat Forecast - GLOBAL TEST: RMSE=1.198, MAPE=176642391668062.719[0m
+[2025-11-26 15:33:19] [DEBUG] Heat Forecast - Forecasting house[0m
+[2025-11-26 15:33:19] [ERROR] Heat Forecast - Ошибка прогноза для дома 189f7416-145a-4f91-ace2-2668dd7a37a4[0m
+Traceback (most recent call last):
+  File [35m"/Users/dmitry/PycharmProjects/heat_ml/src/forecasts/tasks.py"[0m, line [35m133[0m, in [35mrun_forecast[0m
+    future_df, y_future = [31mforecast_next_heating_season_with_api[0m[1;31m([0m
+                          [31m~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m[1;31m^[0m
+        [1;31mmodel=model,[0m
+        [1;31m^^^^^^^^^^^^[0m
+    ...<7 lines>...
+        [1;31mseq_len=seq_len,[0m
+        [1;31m^^^^^^^^^^^^^^^^[0m
+    [1;31m)[0m
+    [1;31m^[0m
+  File [35m"/Users/dmitry/PycharmProjects/heat_ml/src/forecasts/tasks.py"[0m, line [35m510[0m, in [35mforecast_next_heating_season_with_api[0m
+    start, end, future_dates = [31mget_next_heating_season_range[0m[1;31m(last_date)[0m
+                               [31m~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m[1;31m^^^^^^^^^^^[0m
+  File [35m"/Users/dmitry/PycharmProjects/heat_ml/src/forecasts/tasks.py"[0m, line [35m473[0m, in [35mget_next_heating_season_range[0m
+    current_season_year = get_current_heating_season_year(last_date)
+  File [35m"/Users/dmitry/PycharmProjects/heat_ml/src/forecasts/tasks.py"[0m, line [35m460[0m, in [35mget_current_heating_season_year[0m
+    if [1;31mlast_date.month[0m > 10 or (last_date.month == 10 and last_date.day >= 1):
+       [1;31m^^^^^^^^^^^^^^^[0m
+[1;35mAttributeError[0m: [35m'str' object has no attribute 'month'[0m
+[2025-11-26 15:33:19] [DEBUG] Heat Forecast - Forecasting house[0m
+[2025-11-26 15:33:19] [ERROR] Heat Forecast - Ошибка прогноза для дома 738cee13-6901-4f1e-b00a-877415492ceb[0m
+Traceback (most recent call last):
+  File [35m"/Users/dmitry/PycharmProjects/heat_ml/src/forecasts/tasks.py"[0m, line [35m133[0m, in [35mrun_forecast[0m
+    future_df, y_future = [31mforecast_next_heating_season_with_api[0m[1;31m([0m
+                          [31m~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m[1;31m^[0m
+        [1;31mmodel=model,[0m
+        [1;31m^^^^^^^^^^^^[0m
+    ...<7 lines>...
+        [1;31mseq_len=seq_len,[0m
+        [1;31m^^^^^^^^^^^^^^^^[0m
+    [1;31m)[0m
+    [1;31m^[0m
+  File [35m"/Users/dmitry/PycharmProjects/heat_ml/src/forecasts/tasks.py"[0m, line [35m510[0m, in [35mforecast_next_heating_season_with_api[0m
+    start, end, future_dates = [31mget_next_heating_season_range[0m[1;31m(last_date)[0m
+                               [31m~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m[1;31m^^^^^^^^^^^[0m
+  File [35m"/Users/dmitry/PycharmProjects/heat_ml/src/forecasts/tasks.py"[0m, line [35m473[0m, in [35mget_next_heating_season_range[0m
+    current_season_year = get_current_heating_season_year(last_date)
+  File [35m"/Users/dmitry/PycharmProjects/heat_ml/src/forecasts/tasks.py"[0m, line [35m460[0m, in [35mget_current_heating_season_year[0m
+    if [1;31mlast_date.month[0m > 10 or (last_date.month == 10 and last_date.day >= 1):
+       [1;31m^^^^^^^^^^^^^^^[0m
+[1;35mAttributeError[0m: [35m'str' object has no attribute 'month'[0m
+[2025-11-26 15:33:19] [DEBUG] Heat Forecast - Forecasting house[0m
+[2025-11-26 15:33:19] [ERROR] Heat Forecast - Ошибка прогноза для дома 75494a94-7f4f-4e4b-ae5e-c882c05e5de7[0m
+Traceback (most recent call last):
+  File [35m"/Users/dmitry/PycharmProjects/heat_ml/src/forecasts/tasks.py"[0m, line [35m133[0m, in [35mrun_forecast[0m
+    future_df, y_future = [31mforecast_next_heating_season_with_api[0m[1;31m([0m
+                          [31m~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m[1;31m^[0m
+        [1;31mmodel=model,[0m
+        [1;31m^^^^^^^^^^^^[0m
+    ...<7 lines>...
+        [1;31mseq_len=seq_len,[0m
+        [1;31m^^^^^^^^^^^^^^^^[0m
+    [1;31m)[0m
+    [1;31m^[0m
+  File [35m"/Users/dmitry/PycharmProjects/heat_ml/src/forecasts/tasks.py"[0m, line [35m510[0m, in [35mforecast_next_heating_season_with_api[0m
+    start, end, future_dates = [31mget_next_heating_season_range[0m[1;31m(last_date)[0m
+                               [31m~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m[1;31m^^^^^^^^^^^[0m
+  File [35m"/Users/dmitry/PycharmProjects/heat_ml/src/forecasts/tasks.py"[0m, line [35m473[0m, in [35mget_next_heating_season_range[0m
+    current_season_year = get_current_heating_season_year(last_date)
+  File [35m"/Users/dmitry/PycharmProjects/heat_ml/src/forecasts/tasks.py"[0m, line [35m460[0m, in [35mget_current_heating_season_year[0m
+    if [1;31mlast_date.month[0m > 10 or (last_date.month == 10 and last_date.day >= 1):
+       [1;31m^^^^^^^^^^^^^^^[0m
+[1;35mAttributeError[0m: [35m'str' object has no attribute 'month'[0m
+[2025-11-26 15:33:19] [DEBUG] Heat Forecast - Forecasting house[0m
+[2025-11-26 15:33:19] [ERROR] Heat Forecast - Ошибка прогноза для дома a5dab6ca-9c93-460d-9f51-7f3b7206dbdc[0m
+Traceback (most recent call last):
+  File [35m"/Users/dmitry/PycharmProjects/heat_ml/src/forecasts/tasks.py"[0m, line [35m133[0m, in [35mrun_forecast[0m
+    future_df, y_future = [31mforecast_next_heating_season_with_api[0m[1;31m([0m
+                          [31m~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m[1;31m^[0m
+        [1;31mmodel=model,[0m
+        [1;31m^^^^^^^^^^^^[0m
+    ...<7 lines>...
+        [1;31mseq_len=seq_len,[0m
+        [1;31m^^^^^^^^^^^^^^^^[0m
+    [1;31m)[0m
+    [1;31m^[0m
+  File [35m"/Users/dmitry/PycharmProjects/heat_ml/src/forecasts/tasks.py"[0m, line [35m510[0m, in [35mforecast_next_heating_season_with_api[0m
+    start, end, future_dates = [31mget_next_heating_season_range[0m[1;31m(last_date)[0m
+                               [31m~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m[1;31m^^^^^^^^^^^[0m
+  File [35m"/Users/dmitry/PycharmProjects/heat_ml/src/forecasts/tasks.py"[0m, line [35m473[0m, in [35mget_next_heating_season_range[0m
+    current_season_year = get_current_heating_season_year(last_date)
+  File [35m"/Users/dmitry/PycharmProjects/heat_ml/src/forecasts/tasks.py"[0m, line [35m460[0m, in [35mget_current_heating_season_year[0m
+    if [1;31mlast_date.month[0m > 10 or (last_date.month == 10 and last_date.day >= 1):
+       [1;31m^^^^^^^^^^^^^^^[0m
+[1;35mAttributeError[0m: [35m'str' object has no attribute 'month'[0m
+[2025-11-26 15:33:19] [DEBUG] Heat Forecast - Forecasting house[0m
+[2025-11-26 15:33:19] [ERROR] Heat Forecast - Ошибка прогноза для дома c27f912a-8ae3-4186-8bcf-e6390df74932[0m
+Traceback (most recent call last):
+  File [35m"/Users/dmitry/PycharmProjects/heat_ml/src/forecasts/tasks.py"[0m, line [35m133[0m, in [35mrun_forecast[0m
+    future_df, y_future = [31mforecast_next_heating_season_with_api[0m[1;31m([0m
+                          [31m~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m[1;31m^[0m
+        [1;31mmodel=model,[0m
+        [1;31m^^^^^^^^^^^^[0m
+    ...<7 lines>...
+        [1;31mseq_len=seq_len,[0m
+        [1;31m^^^^^^^^^^^^^^^^[0m
+    [1;31m)[0m
+    [1;31m^[0m
+  File [35m"/Users/dmitry/PycharmProjects/heat_ml/src/forecasts/tasks.py"[0m, line [35m510[0m, in [35mforecast_next_heating_season_with_api[0m
+    start, end, future_dates = [31mget_next_heating_season_range[0m[1;31m(last_date)[0m
+                               [31m~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m[1;31m^^^^^^^^^^^[0m
+  File [35m"/Users/dmitry/PycharmProjects/heat_ml/src/forecasts/tasks.py"[0m, line [35m473[0m, in [35mget_next_heating_season_range[0m
+    current_season_year = get_current_heating_season_year(last_date)
+  File [35m"/Users/dmitry/PycharmProjects/heat_ml/src/forecasts/tasks.py"[0m, line [35m460[0m, in [35mget_current_heating_season_year[0m
+    if [1;31mlast_date.month[0m > 10 or (last_date.month == 10 and last_date.day >= 1):
+       [1;31m^^^^^^^^^^^^^^^[0m
+[1;35mAttributeError[0m: [35m'str' object has no attribute 'month'[0m
+[2025-11-26 15:33:19] [ERROR] Heat Forecast - Forecast failed[0m
+Traceback (most recent call last):
+  File [35m"/Users/dmitry/PycharmProjects/heat_ml/src/forecasts/tasks.py"[0m, line [35m160[0m, in [35mrun_forecast[0m
+    raise ValueError("Forecast generation failed for all houses")
+[1;35mValueError[0m: [35mForecast generation failed for all houses[0m
+[2025-11-26 15:34:51] [INFO] Heat Forecast - Application stopped[0m
+[2025-11-26 15:34:56] [INFO] Heat Forecast - Starting Heat Forecast on 0.0.0.0:8000[0m
+[2025-11-26 15:35:33] [DEBUG] Heat Forecast - Ensuring Timescale hypertable exists[0m
+[2025-11-26 15:35:33] [INFO] Heat Forecast - Timescale hypertable ready[0m
+[2025-11-26 15:35:33] [INFO] Heat Forecast - Starting forecast job[0m
+[2025-11-26 15:35:33] [DEBUG] Heat Forecast - Loading prepared dataset[0m
+[2025-11-26 15:35:33] [INFO] Heat Forecast - Loaded dataset[0m
+[2025-11-26 15:35:33] [DEBUG] Heat Forecast - Feature columns prepared[0m
+[2025-11-26 15:35:33] [INFO] Heat Forecast - Unique houses detected[0m
+[2025-11-26 15:35:33] [DEBUG] Heat Forecast - Global scalers fitted[0m
+[2025-11-26 15:35:33] [INFO] Heat Forecast - Built train/test datasets[0m
+[2025-11-26 15:37:10] [INFO] Heat Forecast - Model training finished[0m
+[2025-11-26 15:37:10] [INFO] Heat Forecast - GLOBAL TEST: RMSE=1.210, MAPE=178717339655270.281[0m
+[2025-11-26 15:37:10] [DEBUG] Heat Forecast - Forecasting house[0m
+[2025-11-26 15:37:14] [INFO] Heat Forecast - House forecast ready[0m
+[2025-11-26 15:37:14] [DEBUG] Heat Forecast - Forecasting house[0m
+[2025-11-26 15:37:19] [INFO] Heat Forecast - House forecast ready[0m
+[2025-11-26 15:37:19] [DEBUG] Heat Forecast - Forecasting house[0m
+[2025-11-26 15:37:20] [INFO] Heat Forecast - House forecast ready[0m
+[2025-11-26 15:37:20] [DEBUG] Heat Forecast - Forecasting house[0m
+[2025-11-26 15:37:21] [INFO] Heat Forecast - House forecast ready[0m
+[2025-11-26 15:37:21] [DEBUG] Heat Forecast - Forecasting house[0m
+[2025-11-26 15:37:22] [ERROR] Heat Forecast - Ошибка прогноза для дома c27f912a-8ae3-4186-8bcf-e6390df74932[0m
+Traceback (most recent call last):
+  File [35m"/Users/dmitry/PycharmProjects/heat_ml/src/forecasts/tasks.py"[0m, line [35m135[0m, in [35mrun_forecast[0m
+    future_df, y_future = [31mforecast_next_heating_season_with_api[0m[1;31m([0m
+                          [31m~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m[1;31m^[0m
+        [1;31mmodel=model,[0m
+        [1;31m^^^^^^^^^^^^[0m
+    ...<7 lines>...
+        [1;31mseq_len=seq_len,[0m
+        [1;31m^^^^^^^^^^^^^^^^[0m
+    [1;31m)[0m
+    [1;31m^[0m
+  File [35m"/Users/dmitry/PycharmProjects/heat_ml/src/forecasts/tasks.py"[0m, line [35m516[0m, in [35mforecast_next_heating_season_with_api[0m
+    weather_df = fetch_visualcrossing_daily(
+        api_key=api_key,
+    ...<3 lines>...
+        unit_group=unit_group,
+    )
+  File [35m"/Users/dmitry/PycharmProjects/heat_ml/src/forecasts/tasks.py"[0m, line [35m439[0m, in [35mfetch_visualcrossing_daily[0m
+    [31mresp.raise_for_status[0m[1;31m()[0m
+    [31m~~~~~~~~~~~~~~~~~~~~~[0m[1;31m^^[0m
+  File [35m"/Users/dmitry/PycharmProjects/heat_ml/venv/lib/python3.13/site-packages/requests/models.py"[0m, line [35m1026[0m, in [35mraise_for_status[0m
+    raise HTTPError(http_error_msg, response=self)
+[1;35mrequests.exceptions.HTTPError[0m: [35m429 Client Error:  for url: https://weather.visualcrossing.com/VisualCrossingWebServices/rest/services/timeline/Ulyanovsk/2022-10-01/2023-04-30?key=YJ2AL88J8LHJZ7AYCKLWFP6SL&unitGroup=metric&include=days&elements=datetime%2Ctemp%2Chumidity&contentType=json[0m
+[2025-11-26 15:37:22] [DEBUG] Heat Forecast - Model artifacts directory prepared[0m
+[2025-11-26 15:37:22] [INFO] Heat Forecast - Forecast series stored[0m
+[2025-11-26 15:37:22] [DEBUG] Heat Forecast - CSV artifact saved[0m
+[2025-11-26 15:37:22] [DEBUG] Heat Forecast - JSON artifact saved[0m
+[2025-11-26 15:37:22] [INFO] Heat Forecast - Forecast completed[0m
+[2025-11-26 15:45:38] [INFO] Heat Forecast - Application stopped[0m
+[2025-11-26 15:45:44] [INFO] Heat Forecast - Starting Heat Forecast on 0.0.0.0:8000[0m
+[2025-11-26 15:45:51] [INFO] Heat Forecast - Application stopped[0m
+[2025-11-26 15:45:57] [INFO] Heat Forecast - Starting Heat Forecast on 0.0.0.0:8000[0m
+[2025-11-26 15:46:04] [INFO] Heat Forecast - Application stopped[0m
+[2025-11-26 15:46:11] [INFO] Heat Forecast - Starting Heat Forecast on 0.0.0.0:8000[0m
+[2025-11-26 15:46:17] [INFO] Heat Forecast - Application stopped[0m
+[2025-11-26 15:46:24] [INFO] Heat Forecast - Starting Heat Forecast on 0.0.0.0:8000[0m
+[2025-11-26 15:46:31] [INFO] Heat Forecast - Starting Heat Forecast on 0.0.0.0:8000[0m
+[2025-11-26 15:46:39] [INFO] Heat Forecast - Starting Heat Forecast on 0.0.0.0:8000[0m
+[2025-11-26 15:46:41] [INFO] Heat Forecast - Application stopped[0m
+[2025-11-26 15:46:51] [INFO] Heat Forecast - Starting Heat Forecast on 0.0.0.0:8000[0m
+[2025-11-26 15:47:07] [INFO] Heat Forecast - Starting Heat Forecast on 0.0.0.0:8000[0m
+[2025-11-26 15:47:09] [INFO] Heat Forecast - Application stopped[0m
+[2025-11-26 15:47:16] [INFO] Heat Forecast - Starting Heat Forecast on 0.0.0.0:8000[0m
+[2025-11-26 15:47:55] [INFO] Heat Forecast - Application stopped[0m
+[2025-11-26 16:20:08] [INFO] Heat Forecast - Starting Heat Forecast on 0.0.0.0:8000[0m
+[2025-11-26 16:20:27] [INFO] Heat Forecast - Login succeeded[0m
+[2025-11-26 16:20:54] [DEBUG] Heat Forecast - Ensuring Timescale hypertable exists[0m
+[2025-11-26 16:20:54] [INFO] Heat Forecast - Timescale hypertable ready[0m
+[2025-11-26 16:20:54] [INFO] Heat Forecast - Starting forecast job[0m
+[2025-11-26 16:20:54] [DEBUG] Heat Forecast - Loading prepared dataset[0m
+[2025-11-26 16:20:54] [INFO] Heat Forecast - Loaded dataset[0m
+[2025-11-26 16:20:54] [DEBUG] Heat Forecast - Feature columns prepared[0m
+[2025-11-26 16:20:54] [INFO] Heat Forecast - Unique houses detected[0m
+[2025-11-26 16:20:54] [DEBUG] Heat Forecast - Global scalers fitted[0m
+[2025-11-26 16:20:54] [INFO] Heat Forecast - Built train/test datasets[0m
+[2025-11-26 16:22:29] [INFO] Heat Forecast - Model training finished[0m
+[2025-11-26 16:22:30] [INFO] Heat Forecast - GLOBAL TEST: RMSE=1.177, MAPE=175981135686798.594[0m
+[2025-11-26 16:22:30] [DEBUG] Heat Forecast - Forecasting house[0m
+[2025-11-26 16:22:39] [ERROR] Heat Forecast - Ошибка прогноза для дома 189f7416-145a-4f91-ace2-2668dd7a37a4[0m
+Traceback (most recent call last):
+  File [35m"/Users/dmitry/PycharmProjects/heat_ml/src/forecasts/tasks.py"[0m, line [35m141[0m, in [35mrun_forecast[0m
+    future_df, y_future = [31mforecast_next_heating_season_with_api[0m[1;31m([0m
+                          [31m~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m[1;31m^[0m
+        [1;31mmodel=model,[0m
+        [1;31m^^^^^^^^^^^^[0m
+    ...<7 lines>...
+        [1;31mseq_len=seq_len,[0m
+        [1;31m^^^^^^^^^^^^^^^^[0m
+    [1;31m)[0m
+    [1;31m^[0m
+  File [35m"/Users/dmitry/PycharmProjects/heat_ml/src/forecasts/tasks.py"[0m, line [35m539[0m, in [35mforecast_next_heating_season_with_api[0m
+    weather_df = fetch_visualcrossing_daily(
+        api_key=api_key,
+    ...<3 lines>...
+        unit_group=unit_group,
+    )
+  File [35m"/Users/dmitry/PycharmProjects/heat_ml/src/forecasts/tasks.py"[0m, line [35m462[0m, in [35mfetch_visualcrossing_daily[0m
+    [31mresp.raise_for_status[0m[1;31m()[0m
+    [31m~~~~~~~~~~~~~~~~~~~~~[0m[1;31m^^[0m
+  File [35m"/Users/dmitry/PycharmProjects/heat_ml/venv/lib/python3.13/site-packages/requests/models.py"[0m, line [35m1026[0m, in [35mraise_for_status[0m
+    raise HTTPError(http_error_msg, response=self)
+[1;35mrequests.exceptions.HTTPError[0m: [35m429 Client Error:  for url: https://weather.visualcrossing.com/VisualCrossingWebServices/rest/services/timeline/Ulyanovsk/2022-10-01/2023-04-30?key=YJ2AL88J8LHJZ7AYCKLWFP6SL&unitGroup=metric&include=days&elements=datetime%2Ctemp%2Chumidity&contentType=json[0m
+[2025-11-26 16:22:39] [DEBUG] Heat Forecast - Forecasting house[0m
+[2025-11-26 16:22:40] [ERROR] Heat Forecast - Ошибка прогноза для дома 738cee13-6901-4f1e-b00a-877415492ceb[0m
+Traceback (most recent call last):
+  File [35m"/Users/dmitry/PycharmProjects/heat_ml/src/forecasts/tasks.py"[0m, line [35m141[0m, in [35mrun_forecast[0m
+    future_df, y_future = [31mforecast_next_heating_season_with_api[0m[1;31m([0m
+                          [31m~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m[1;31m^[0m
+        [1;31mmodel=model,[0m
+        [1;31m^^^^^^^^^^^^[0m
+    ...<7 lines>...
+        [1;31mseq_len=seq_len,[0m
+        [1;31m^^^^^^^^^^^^^^^^[0m
+    [1;31m)[0m
+    [1;31m^[0m
+  File [35m"/Users/dmitry/PycharmProjects/heat_ml/src/forecasts/tasks.py"[0m, line [35m539[0m, in [35mforecast_next_heating_season_with_api[0m
+    weather_df = fetch_visualcrossing_daily(
+        api_key=api_key,
+    ...<3 lines>...
+        unit_group=unit_group,
+    )
+  File [35m"/Users/dmitry/PycharmProjects/heat_ml/src/forecasts/tasks.py"[0m, line [35m462[0m, in [35mfetch_visualcrossing_daily[0m
+    [31mresp.raise_for_status[0m[1;31m()[0m
+    [31m~~~~~~~~~~~~~~~~~~~~~[0m[1;31m^^[0m
+  File [35m"/Users/dmitry/PycharmProjects/heat_ml/venv/lib/python3.13/site-packages/requests/models.py"[0m, line [35m1026[0m, in [35mraise_for_status[0m
+    raise HTTPError(http_error_msg, response=self)
+[1;35mrequests.exceptions.HTTPError[0m: [35m429 Client Error:  for url: https://weather.visualcrossing.com/VisualCrossingWebServices/rest/services/timeline/Ulyanovsk/2022-10-01/2023-04-30?key=YJ2AL88J8LHJZ7AYCKLWFP6SL&unitGroup=metric&include=days&elements=datetime%2Ctemp%2Chumidity&contentType=json[0m
+[2025-11-26 16:22:40] [DEBUG] Heat Forecast - Forecasting house[0m
+[2025-11-26 16:22:41] [ERROR] Heat Forecast - Ошибка прогноза для дома 75494a94-7f4f-4e4b-ae5e-c882c05e5de7[0m
+Traceback (most recent call last):
+  File [35m"/Users/dmitry/PycharmProjects/heat_ml/src/forecasts/tasks.py"[0m, line [35m141[0m, in [35mrun_forecast[0m
+    future_df, y_future = [31mforecast_next_heating_season_with_api[0m[1;31m([0m
+                          [31m~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m[1;31m^[0m
+        [1;31mmodel=model,[0m
+        [1;31m^^^^^^^^^^^^[0m
+    ...<7 lines>...
+        [1;31mseq_len=seq_len,[0m
+        [1;31m^^^^^^^^^^^^^^^^[0m
+    [1;31m)[0m
+    [1;31m^[0m
+  File [35m"/Users/dmitry/PycharmProjects/heat_ml/src/forecasts/tasks.py"[0m, line [35m539[0m, in [35mforecast_next_heating_season_with_api[0m
+    weather_df = fetch_visualcrossing_daily(
+        api_key=api_key,
+    ...<3 lines>...
+        unit_group=unit_group,
+    )
+  File [35m"/Users/dmitry/PycharmProjects/heat_ml/src/forecasts/tasks.py"[0m, line [35m462[0m, in [35mfetch_visualcrossing_daily[0m
+    [31mresp.raise_for_status[0m[1;31m()[0m
+    [31m~~~~~~~~~~~~~~~~~~~~~[0m[1;31m^^[0m
+  File [35m"/Users/dmitry/PycharmProjects/heat_ml/venv/lib/python3.13/site-packages/requests/models.py"[0m, line [35m1026[0m, in [35mraise_for_status[0m
+    raise HTTPError(http_error_msg, response=self)
+[1;35mrequests.exceptions.HTTPError[0m: [35m429 Client Error:  for url: https://weather.visualcrossing.com/VisualCrossingWebServices/rest/services/timeline/Ulyanovsk/2022-10-01/2023-04-30?key=YJ2AL88J8LHJZ7AYCKLWFP6SL&unitGroup=metric&include=days&elements=datetime%2Ctemp%2Chumidity&contentType=json[0m
+[2025-11-26 16:22:41] [DEBUG] Heat Forecast - Forecasting house[0m
+[2025-11-26 16:22:46] [ERROR] Heat Forecast - Ошибка прогноза для дома a5dab6ca-9c93-460d-9f51-7f3b7206dbdc[0m
+Traceback (most recent call last):
+  File [35m"/Users/dmitry/PycharmProjects/heat_ml/src/forecasts/tasks.py"[0m, line [35m141[0m, in [35mrun_forecast[0m
+    future_df, y_future = [31mforecast_next_heating_season_with_api[0m[1;31m([0m
+                          [31m~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m[1;31m^[0m
+        [1;31mmodel=model,[0m
+        [1;31m^^^^^^^^^^^^[0m
+    ...<7 lines>...
+        [1;31mseq_len=seq_len,[0m
+        [1;31m^^^^^^^^^^^^^^^^[0m
+    [1;31m)[0m
+    [1;31m^[0m
+  File [35m"/Users/dmitry/PycharmProjects/heat_ml/src/forecasts/tasks.py"[0m, line [35m539[0m, in [35mforecast_next_heating_season_with_api[0m
+    weather_df = fetch_visualcrossing_daily(
+        api_key=api_key,
+    ...<3 lines>...
+        unit_group=unit_group,
+    )
+  File [35m"/Users/dmitry/PycharmProjects/heat_ml/src/forecasts/tasks.py"[0m, line [35m462[0m, in [35mfetch_visualcrossing_daily[0m
+    [31mresp.raise_for_status[0m[1;31m()[0m
+    [31m~~~~~~~~~~~~~~~~~~~~~[0m[1;31m^^[0m
+  File [35m"/Users/dmitry/PycharmProjects/heat_ml/venv/lib/python3.13/site-packages/requests/models.py"[0m, line [35m1026[0m, in [35mraise_for_status[0m
+    raise HTTPError(http_error_msg, response=self)
+[1;35mrequests.exceptions.HTTPError[0m: [35m429 Client Error:  for url: https://weather.visualcrossing.com/VisualCrossingWebServices/rest/services/timeline/Ulyanovsk/2022-10-01/2023-04-30?key=YJ2AL88J8LHJZ7AYCKLWFP6SL&unitGroup=metric&include=days&elements=datetime%2Ctemp%2Chumidity&contentType=json[0m
+[2025-11-26 16:22:46] [DEBUG] Heat Forecast - Forecasting house[0m
+[2025-11-26 16:22:47] [ERROR] Heat Forecast - Ошибка прогноза для дома c27f912a-8ae3-4186-8bcf-e6390df74932[0m
+Traceback (most recent call last):
+  File [35m"/Users/dmitry/PycharmProjects/heat_ml/src/forecasts/tasks.py"[0m, line [35m141[0m, in [35mrun_forecast[0m
+    future_df, y_future = [31mforecast_next_heating_season_with_api[0m[1;31m([0m
+                          [31m~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m[1;31m^[0m
+        [1;31mmodel=model,[0m
+        [1;31m^^^^^^^^^^^^[0m
+    ...<7 lines>...
+        [1;31mseq_len=seq_len,[0m
+        [1;31m^^^^^^^^^^^^^^^^[0m
+    [1;31m)[0m
+    [1;31m^[0m
+  File [35m"/Users/dmitry/PycharmProjects/heat_ml/src/forecasts/tasks.py"[0m, line [35m539[0m, in [35mforecast_next_heating_season_with_api[0m
+    weather_df = fetch_visualcrossing_daily(
+        api_key=api_key,
+    ...<3 lines>...
+        unit_group=unit_group,
+    )
+  File [35m"/Users/dmitry/PycharmProjects/heat_ml/src/forecasts/tasks.py"[0m, line [35m462[0m, in [35mfetch_visualcrossing_daily[0m
+    [31mresp.raise_for_status[0m[1;31m()[0m
+    [31m~~~~~~~~~~~~~~~~~~~~~[0m[1;31m^^[0m
+  File [35m"/Users/dmitry/PycharmProjects/heat_ml/venv/lib/python3.13/site-packages/requests/models.py"[0m, line [35m1026[0m, in [35mraise_for_status[0m
+    raise HTTPError(http_error_msg, response=self)
+[1;35mrequests.exceptions.HTTPError[0m: [35m429 Client Error:  for url: https://weather.visualcrossing.com/VisualCrossingWebServices/rest/services/timeline/Ulyanovsk/2022-10-01/2023-04-30?key=YJ2AL88J8LHJZ7AYCKLWFP6SL&unitGroup=metric&include=days&elements=datetime%2Ctemp%2Chumidity&contentType=json[0m
+[2025-11-26 16:22:47] [ERROR] Heat Forecast - Forecast failed[0m
+Traceback (most recent call last):
+  File [35m"/Users/dmitry/PycharmProjects/heat_ml/src/forecasts/tasks.py"[0m, line [35m179[0m, in [35mrun_forecast[0m
+    raise ValueError("Forecast generation failed for all houses")
+[1;35mValueError[0m: [35mForecast generation failed for all houses[0m
+[2025-11-26 16:27:59] [INFO] Heat Forecast - Application stopped[0m
+[2025-11-27 14:58:53] [INFO] Heat Forecast - Starting Heat Forecast on 0.0.0.0:8000[0m
+[2025-11-27 15:20:34] [INFO] Heat Forecast - Application stopped[0m
+[2025-11-27 15:20:43] [INFO] Heat Forecast - Starting Heat Forecast on 0.0.0.0:8000[0m
+[2025-11-27 15:22:07] [INFO] Heat Forecast - Login succeeded[0m
+[2025-11-27 15:23:27] [WARNING] Heat Forecast - Login failed[0m
+[2025-11-27 15:23:27] [WARNING] Heat Forecast - Domain error[0m
+[2025-11-27 15:26:26] [INFO] Heat Forecast - Login succeeded[0m
+[2025-11-27 15:26:52] [DEBUG] Heat Forecast - Ensuring Timescale hypertable exists[0m
+[2025-11-27 15:26:52] [INFO] Heat Forecast - Timescale hypertable ready[0m
+[2025-11-27 15:26:52] [INFO] Heat Forecast - Starting forecast job[0m
+[2025-11-27 15:26:52] [DEBUG] Heat Forecast - Loading prepared dataset[0m
+[2025-11-27 15:26:52] [INFO] Heat Forecast - Loaded dataset[0m
+[2025-11-27 15:26:52] [DEBUG] Heat Forecast - Feature columns prepared[0m
+[2025-11-27 15:26:52] [INFO] Heat Forecast - Unique houses detected[0m
+[2025-11-27 15:26:52] [DEBUG] Heat Forecast - Global scalers fitted[0m
+[2025-11-27 15:26:53] [INFO] Heat Forecast - Built train/test datasets[0m
+[2025-11-27 15:28:32] [INFO] Heat Forecast - Model training finished[0m
+[2025-11-27 15:28:32] [INFO] Heat Forecast - GLOBAL TEST: RMSE=1.244, MAPE=160808856259735.500[0m
+[2025-11-27 15:28:32] [DEBUG] Heat Forecast - Forecasting house[0m
+[2025-11-27 15:28:34] [INFO] Heat Forecast - House forecast ready[0m
+[2025-11-27 15:28:34] [DEBUG] Heat Forecast - Forecasting house[0m
+[2025-11-27 15:28:37] [INFO] Heat Forecast - House forecast ready[0m
+[2025-11-27 15:28:37] [DEBUG] Heat Forecast - Forecasting house[0m
+[2025-11-27 15:28:42] [INFO] Heat Forecast - House forecast ready[0m
+[2025-11-27 15:28:42] [DEBUG] Heat Forecast - Forecasting house[0m
+[2025-11-27 15:28:48] [INFO] Heat Forecast - House forecast ready[0m
+[2025-11-27 15:28:48] [DEBUG] Heat Forecast - Forecasting house[0m
+[2025-11-27 15:28:49] [ERROR] Heat Forecast - Ошибка прогноза для дома c27f912a-8ae3-4186-8bcf-e6390df74932[0m
+Traceback (most recent call last):
+  File [35m"/Users/dmitry/PycharmProjects/heat_ml/src/forecasts/tasks.py"[0m, line [35m141[0m, in [35mrun_forecast[0m
+    future_df, y_future = [31mforecast_next_heating_season_with_api[0m[1;31m([0m
+                          [31m~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m[1;31m^[0m
+        [1;31mmodel=model,[0m
+        [1;31m^^^^^^^^^^^^[0m
+    ...<7 lines>...
+        [1;31mseq_len=seq_len,[0m
+        [1;31m^^^^^^^^^^^^^^^^[0m
+    [1;31m)[0m
+    [1;31m^[0m
+  File [35m"/Users/dmitry/PycharmProjects/heat_ml/src/forecasts/tasks.py"[0m, line [35m539[0m, in [35mforecast_next_heating_season_with_api[0m
+    weather_df = fetch_visualcrossing_daily(
+        api_key=api_key,
+    ...<3 lines>...
+        unit_group=unit_group,
+    )
+  File [35m"/Users/dmitry/PycharmProjects/heat_ml/src/forecasts/tasks.py"[0m, line [35m462[0m, in [35mfetch_visualcrossing_daily[0m
+    [31mresp.raise_for_status[0m[1;31m()[0m
+    [31m~~~~~~~~~~~~~~~~~~~~~[0m[1;31m^^[0m
+  File [35m"/Users/dmitry/PycharmProjects/heat_ml/venv/lib/python3.13/site-packages/requests/models.py"[0m, line [35m1026[0m, in [35mraise_for_status[0m
+    raise HTTPError(http_error_msg, response=self)
+[1;35mrequests.exceptions.HTTPError[0m: [35m429 Client Error:  for url: https://weather.visualcrossing.com/VisualCrossingWebServices/rest/services/timeline/Ulyanovsk/2022-10-01/2023-04-30?key=YJ2AL88J8LHJZ7AYCKLWFP6SL&unitGroup=metric&include=days&elements=datetime%2Ctemp%2Chumidity&contentType=json[0m
+[2025-11-27 15:28:49] [DEBUG] Heat Forecast - Model artifacts directory prepared[0m
+[2025-11-27 15:28:49] [INFO] Heat Forecast - Forecast series stored[0m
+[2025-11-27 15:28:49] [INFO] Heat Forecast - House series stored[0m
+[2025-11-27 15:28:49] [DEBUG] Heat Forecast - CSV artifact saved[0m
+[2025-11-27 15:28:49] [DEBUG] Heat Forecast - JSON artifact saved[0m
+[2025-11-27 15:28:49] [INFO] Heat Forecast - Forecast completed[0m
+[2025-11-27 15:37:18] [INFO] Heat Forecast - Application stopped[0m
+[2025-11-27 15:37:22] [INFO] Heat Forecast - Starting Heat Forecast on 0.0.0.0:8000[0m
+[2025-11-27 15:37:31] [INFO] Heat Forecast - Application stopped[0m
+[2025-11-27 15:37:36] [INFO] Heat Forecast - Starting Heat Forecast on 0.0.0.0:8000[0m
+[2025-11-27 15:39:34] [INFO] Heat Forecast - Application stopped[0m
+[2025-11-27 15:39:40] [INFO] Heat Forecast - Starting Heat Forecast on 0.0.0.0:8000[0m
+[2025-11-27 15:40:42] [DEBUG] Heat Forecast - Ensuring Timescale hypertable exists[0m
+[2025-11-27 15:40:42] [INFO] Heat Forecast - Timescale hypertable ready[0m
+[2025-11-27 15:40:42] [INFO] Heat Forecast - Starting forecast job[0m
+[2025-11-27 15:40:42] [DEBUG] Heat Forecast - Loading prepared dataset[0m
+[2025-11-27 15:40:42] [INFO] Heat Forecast - Loaded dataset[0m
+[2025-11-27 15:40:42] [DEBUG] Heat Forecast - Feature columns prepared[0m
+[2025-11-27 15:40:42] [INFO] Heat Forecast - Unique houses detected[0m
+[2025-11-27 15:40:42] [DEBUG] Heat Forecast - Global scalers fitted[0m
+[2025-11-27 15:40:42] [INFO] Heat Forecast - Built train/test datasets[0m
+[2025-11-27 15:42:23] [INFO] Heat Forecast - Model training finished[0m
+[2025-11-27 15:42:23] [INFO] Heat Forecast - GLOBAL TEST: RMSE=1.285, MAPE=179246383400094.312[0m
+[2025-11-27 15:42:23] [DEBUG] Heat Forecast - Forecasting house[0m
+[2025-11-27 15:42:24] [ERROR] Heat Forecast - Ошибка прогноза для дома 189f7416-145a-4f91-ace2-2668dd7a37a4[0m
+Traceback (most recent call last):
+  File [35m"/Users/dmitry/PycharmProjects/heat_ml/src/forecasts/tasks.py"[0m, line [35m141[0m, in [35mrun_forecast[0m
+    future_df, y_future = [31mforecast_next_heating_season_with_api[0m[1;31m([0m
+                          [31m~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m[1;31m^[0m
+        [1;31mmodel=model,[0m
+        [1;31m^^^^^^^^^^^^[0m
+    ...<7 lines>...
+        [1;31mseq_len=seq_len,[0m
+        [1;31m^^^^^^^^^^^^^^^^[0m
+    [1;31m)[0m
+    [1;31m^[0m
+  File [35m"/Users/dmitry/PycharmProjects/heat_ml/src/forecasts/tasks.py"[0m, line [35m539[0m, in [35mforecast_next_heating_season_with_api[0m
+    weather_df = fetch_visualcrossing_daily(
+        api_key=api_key,
+    ...<3 lines>...
+        unit_group=unit_group,
+    )
+  File [35m"/Users/dmitry/PycharmProjects/heat_ml/src/forecasts/tasks.py"[0m, line [35m462[0m, in [35mfetch_visualcrossing_daily[0m
+    [31mresp.raise_for_status[0m[1;31m()[0m
+    [31m~~~~~~~~~~~~~~~~~~~~~[0m[1;31m^^[0m
+  File [35m"/Users/dmitry/PycharmProjects/heat_ml/venv/lib/python3.13/site-packages/requests/models.py"[0m, line [35m1026[0m, in [35mraise_for_status[0m
+    raise HTTPError(http_error_msg, response=self)
+[1;35mrequests.exceptions.HTTPError[0m: [35m429 Client Error:  for url: https://weather.visualcrossing.com/VisualCrossingWebServices/rest/services/timeline/Ulyanovsk/2022-10-01/2023-04-30?key=YJ2AL88J8LHJZ7AYCKLWFP6SL&unitGroup=metric&include=days&elements=datetime%2Ctemp%2Chumidity&contentType=json[0m
+[2025-11-27 15:42:24] [DEBUG] Heat Forecast - Forecasting house[0m
+[2025-11-27 15:42:25] [ERROR] Heat Forecast - Ошибка прогноза для дома 738cee13-6901-4f1e-b00a-877415492ceb[0m
+Traceback (most recent call last):
+  File [35m"/Users/dmitry/PycharmProjects/heat_ml/src/forecasts/tasks.py"[0m, line [35m141[0m, in [35mrun_forecast[0m
+    future_df, y_future = [31mforecast_next_heating_season_with_api[0m[1;31m([0m
+                          [31m~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m[1;31m^[0m
+        [1;31mmodel=model,[0m
+        [1;31m^^^^^^^^^^^^[0m
+    ...<7 lines>...
+        [1;31mseq_len=seq_len,[0m
+        [1;31m^^^^^^^^^^^^^^^^[0m
+    [1;31m)[0m
+    [1;31m^[0m
+  File [35m"/Users/dmitry/PycharmProjects/heat_ml/src/forecasts/tasks.py"[0m, line [35m539[0m, in [35mforecast_next_heating_season_with_api[0m
+    weather_df = fetch_visualcrossing_daily(
+        api_key=api_key,
+    ...<3 lines>...
+        unit_group=unit_group,
+    )
+  File [35m"/Users/dmitry/PycharmProjects/heat_ml/src/forecasts/tasks.py"[0m, line [35m462[0m, in [35mfetch_visualcrossing_daily[0m
+    [31mresp.raise_for_status[0m[1;31m()[0m
+    [31m~~~~~~~~~~~~~~~~~~~~~[0m[1;31m^^[0m
+  File [35m"/Users/dmitry/PycharmProjects/heat_ml/venv/lib/python3.13/site-packages/requests/models.py"[0m, line [35m1026[0m, in [35mraise_for_status[0m
+    raise HTTPError(http_error_msg, response=self)
+[1;35mrequests.exceptions.HTTPError[0m: [35m429 Client Error:  for url: https://weather.visualcrossing.com/VisualCrossingWebServices/rest/services/timeline/Ulyanovsk/2022-10-01/2023-04-30?key=YJ2AL88J8LHJZ7AYCKLWFP6SL&unitGroup=metric&include=days&elements=datetime%2Ctemp%2Chumidity&contentType=json[0m
+[2025-11-27 15:42:25] [DEBUG] Heat Forecast - Forecasting house[0m
+[2025-11-27 15:42:26] [ERROR] Heat Forecast - Ошибка прогноза для дома 75494a94-7f4f-4e4b-ae5e-c882c05e5de7[0m
+Traceback (most recent call last):
+  File [35m"/Users/dmitry/PycharmProjects/heat_ml/src/forecasts/tasks.py"[0m, line [35m141[0m, in [35mrun_forecast[0m
+    future_df, y_future = [31mforecast_next_heating_season_with_api[0m[1;31m([0m
+                          [31m~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m[1;31m^[0m
+        [1;31mmodel=model,[0m
+        [1;31m^^^^^^^^^^^^[0m
+    ...<7 lines>...
+        [1;31mseq_len=seq_len,[0m
+        [1;31m^^^^^^^^^^^^^^^^[0m
+    [1;31m)[0m
+    [1;31m^[0m
+  File [35m"/Users/dmitry/PycharmProjects/heat_ml/src/forecasts/tasks.py"[0m, line [35m539[0m, in [35mforecast_next_heating_season_with_api[0m
+    weather_df = fetch_visualcrossing_daily(
+        api_key=api_key,
+    ...<3 lines>...
+        unit_group=unit_group,
+    )
+  File [35m"/Users/dmitry/PycharmProjects/heat_ml/src/forecasts/tasks.py"[0m, line [35m462[0m, in [35mfetch_visualcrossing_daily[0m
+    [31mresp.raise_for_status[0m[1;31m()[0m
+    [31m~~~~~~~~~~~~~~~~~~~~~[0m[1;31m^^[0m
+  File [35m"/Users/dmitry/PycharmProjects/heat_ml/venv/lib/python3.13/site-packages/requests/models.py"[0m, line [35m1026[0m, in [35mraise_for_status[0m
+    raise HTTPError(http_error_msg, response=self)
+[1;35mrequests.exceptions.HTTPError[0m: [35m429 Client Error:  for url: https://weather.visualcrossing.com/VisualCrossingWebServices/rest/services/timeline/Ulyanovsk/2022-10-01/2023-04-30?key=YJ2AL88J8LHJZ7AYCKLWFP6SL&unitGroup=metric&include=days&elements=datetime%2Ctemp%2Chumidity&contentType=json[0m
+[2025-11-27 15:42:26] [DEBUG] Heat Forecast - Forecasting house[0m
+[2025-11-27 15:42:26] [ERROR] Heat Forecast - Ошибка прогноза для дома a5dab6ca-9c93-460d-9f51-7f3b7206dbdc[0m
+Traceback (most recent call last):
+  File [35m"/Users/dmitry/PycharmProjects/heat_ml/src/forecasts/tasks.py"[0m, line [35m141[0m, in [35mrun_forecast[0m
+    future_df, y_future = [31mforecast_next_heating_season_with_api[0m[1;31m([0m
+                          [31m~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m[1;31m^[0m
+        [1;31mmodel=model,[0m
+        [1;31m^^^^^^^^^^^^[0m
+    ...<7 lines>...
+        [1;31mseq_len=seq_len,[0m
+        [1;31m^^^^^^^^^^^^^^^^[0m
+    [1;31m)[0m
+    [1;31m^[0m
+  File [35m"/Users/dmitry/PycharmProjects/heat_ml/src/forecasts/tasks.py"[0m, line [35m539[0m, in [35mforecast_next_heating_season_with_api[0m
+    weather_df = fetch_visualcrossing_daily(
+        api_key=api_key,
+    ...<3 lines>...
+        unit_group=unit_group,
+    )
+  File [35m"/Users/dmitry/PycharmProjects/heat_ml/src/forecasts/tasks.py"[0m, line [35m462[0m, in [35mfetch_visualcrossing_daily[0m
+    [31mresp.raise_for_status[0m[1;31m()[0m
+    [31m~~~~~~~~~~~~~~~~~~~~~[0m[1;31m^^[0m
+  File [35m"/Users/dmitry/PycharmProjects/heat_ml/venv/lib/python3.13/site-packages/requests/models.py"[0m, line [35m1026[0m, in [35mraise_for_status[0m
+    raise HTTPError(http_error_msg, response=self)
+[1;35mrequests.exceptions.HTTPError[0m: [35m429 Client Error:  for url: https://weather.visualcrossing.com/VisualCrossingWebServices/rest/services/timeline/Ulyanovsk/2022-10-01/2023-04-30?key=YJ2AL88J8LHJZ7AYCKLWFP6SL&unitGroup=metric&include=days&elements=datetime%2Ctemp%2Chumidity&contentType=json[0m
+[2025-11-27 15:42:26] [DEBUG] Heat Forecast - Forecasting house[0m
+[2025-11-27 15:42:27] [ERROR] Heat Forecast - Ошибка прогноза для дома c27f912a-8ae3-4186-8bcf-e6390df74932[0m
+Traceback (most recent call last):
+  File [35m"/Users/dmitry/PycharmProjects/heat_ml/src/forecasts/tasks.py"[0m, line [35m141[0m, in [35mrun_forecast[0m
+    future_df, y_future = [31mforecast_next_heating_season_with_api[0m[1;31m([0m
+                          [31m~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m[1;31m^[0m
+        [1;31mmodel=model,[0m
+        [1;31m^^^^^^^^^^^^[0m
+    ...<7 lines>...
+        [1;31mseq_len=seq_len,[0m
+        [1;31m^^^^^^^^^^^^^^^^[0m
+    [1;31m)[0m
+    [1;31m^[0m
+  File [35m"/Users/dmitry/PycharmProjects/heat_ml/src/forecasts/tasks.py"[0m, line [35m539[0m, in [35mforecast_next_heating_season_with_api[0m
+    weather_df = fetch_visualcrossing_daily(
+        api_key=api_key,
+    ...<3 lines>...
+        unit_group=unit_group,
+    )
+  File [35m"/Users/dmitry/PycharmProjects/heat_ml/src/forecasts/tasks.py"[0m, line [35m462[0m, in [35mfetch_visualcrossing_daily[0m
+    [31mresp.raise_for_status[0m[1;31m()[0m
+    [31m~~~~~~~~~~~~~~~~~~~~~[0m[1;31m^^[0m
+  File [35m"/Users/dmitry/PycharmProjects/heat_ml/venv/lib/python3.13/site-packages/requests/models.py"[0m, line [35m1026[0m, in [35mraise_for_status[0m
+    raise HTTPError(http_error_msg, response=self)
+[1;35mrequests.exceptions.HTTPError[0m: [35m429 Client Error:  for url: https://weather.visualcrossing.com/VisualCrossingWebServices/rest/services/timeline/Ulyanovsk/2022-10-01/2023-04-30?key=YJ2AL88J8LHJZ7AYCKLWFP6SL&unitGroup=metric&include=days&elements=datetime%2Ctemp%2Chumidity&contentType=json[0m
+[2025-11-27 15:42:27] [ERROR] Heat Forecast - Forecast failed[0m
+Traceback (most recent call last):
+  File [35m"/Users/dmitry/PycharmProjects/heat_ml/src/forecasts/tasks.py"[0m, line [35m179[0m, in [35mrun_forecast[0m
+    raise ValueError("Forecast generation failed for all houses")
+[1;35mValueError[0m: [35mForecast generation failed for all houses[0m
+[2025-11-27 15:45:28] [INFO] Heat Forecast - Application stopped[0m
+[2025-11-28 09:27:36] [INFO] Heat Forecast - Starting Heat Forecast on 0.0.0.0:8000[0m
+[2025-11-28 09:27:54] [INFO] Heat Forecast - Login succeeded[0m
+[2025-11-28 09:28:09] [DEBUG] Heat Forecast - Ensuring Timescale hypertable exists[0m
+[2025-11-28 09:28:09] [INFO] Heat Forecast - Timescale hypertable ready[0m
+[2025-11-28 09:28:09] [INFO] Heat Forecast - Starting forecast job[0m
+[2025-11-28 09:28:09] [DEBUG] Heat Forecast - Loading prepared dataset[0m
+[2025-11-28 09:28:09] [INFO] Heat Forecast - Loaded dataset[0m
+[2025-11-28 09:28:09] [DEBUG] Heat Forecast - Feature columns prepared[0m
+[2025-11-28 09:28:09] [INFO] Heat Forecast - Unique houses detected[0m
+[2025-11-28 09:28:16] [DEBUG] Heat Forecast - Global scalers fitted[0m
+[2025-11-28 09:28:16] [INFO] Heat Forecast - Built train/test datasets[0m
+[2025-11-28 09:29:47] [INFO] Heat Forecast - Model training finished[0m
+[2025-11-28 09:29:48] [INFO] Heat Forecast - GLOBAL TEST: RMSE=1.246, MAPE=172667124839344.969[0m
+[2025-11-28 09:29:48] [DEBUG] Heat Forecast - Forecasting house[0m
+[2025-11-28 09:29:48] [INFO] Heat Forecast - House forecast ready[0m
+[2025-11-28 09:29:48] [DEBUG] Heat Forecast - Forecasting house[0m
+[2025-11-28 09:29:48] [INFO] Heat Forecast - House forecast ready[0m
+[2025-11-28 09:29:48] [DEBUG] Heat Forecast - Forecasting house[0m
+[2025-11-28 09:29:48] [INFO] Heat Forecast - House forecast ready[0m
+[2025-11-28 09:29:48] [DEBUG] Heat Forecast - Forecasting house[0m
+[2025-11-28 09:29:48] [INFO] Heat Forecast - House forecast ready[0m
+[2025-11-28 09:29:48] [DEBUG] Heat Forecast - Forecasting house[0m
+[2025-11-28 09:29:48] [INFO] Heat Forecast - House forecast ready[0m
+[2025-11-28 09:29:48] [DEBUG] Heat Forecast - Model artifacts directory prepared[0m
+[2025-11-28 09:29:48] [INFO] Heat Forecast - Forecast series stored[0m
+[2025-11-28 09:29:48] [INFO] Heat Forecast - House series stored[0m
+[2025-11-28 09:29:48] [DEBUG] Heat Forecast - CSV artifact saved[0m
+[2025-11-28 09:29:48] [DEBUG] Heat Forecast - JSON artifact saved[0m
+[2025-11-28 09:29:48] [INFO] Heat Forecast - Forecast completed[0m
+[2025-11-28 09:31:21] [INFO] Heat Forecast - Application stopped[0m
+[2025-11-28 09:31:26] [INFO] Heat Forecast - Starting Heat Forecast on 0.0.0.0:8000[0m
+[2025-11-28 09:33:09] [INFO] Heat Forecast - Application stopped[0m
+[2025-11-28 09:33:14] [INFO] Heat Forecast - Starting Heat Forecast on 0.0.0.0:8000[0m
+[2025-11-28 09:33:19] [INFO] Heat Forecast - Application stopped[0m
+[2025-11-28 09:33:23] [INFO] Heat Forecast - Starting Heat Forecast on 0.0.0.0:8000[0m
+[2025-11-28 09:34:10] [INFO] Heat Forecast - Application stopped[0m

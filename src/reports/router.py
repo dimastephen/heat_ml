@@ -1,10 +1,12 @@
 from uuid import UUID
 
 from fastapi import APIRouter, Depends, Query
+from fastapi.responses import FileResponse
 
 from src.reports.schemas import DataQualityReportRead, DataQualityReportList
 from src.reports.service import IReportService
-from src.reports.deps import get_report_service
+from src.reports.deps import get_report_service, get_forecast_report_service
+from src.reports.forecast_service import ForecastReportService
 from src.users.deps import get_current_user
 from src.users.schemas import UserRead
 
@@ -28,3 +30,13 @@ def get_report_by_batch(
     service: IReportService = Depends(get_report_service),
 ):
     return service.get_by_batch(batch_id, current_user.id)
+
+
+@reports_router.get("/forecasts/{job_id}/pdf")
+def download_forecast_report(
+    job_id: UUID,
+    current_user: UserRead = Depends(get_current_user),
+    service: ForecastReportService = Depends(get_forecast_report_service),
+):
+    pdf_path = service.generate_pdf(job_id, current_user.id)
+    return FileResponse(pdf_path, media_type="application/pdf", filename=f"forecast_{job_id}.pdf")

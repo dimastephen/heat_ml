@@ -169,10 +169,11 @@ def _process_file(upload: FileUpload) -> Path:
     elif upload.file_type == FileType.consumption.value:
         destination = prepared_dir / "consumption_prepared.csv"
         data = pd.read_csv(raw_path,sep=';',decimal='.')
-        data.loc[data['is_unreliable'] == 1, 'value'] = np.nan
-        data['value'] = data.groupby('address_uuid')['value'].transform(lambda x: x.interpolate(method='linear'))
         if 'is_unreliable' in data.columns:
+            # Маскируем недостоверные значения, чтобы не влияли на интерполяцию
+            data.loc[data['is_unreliable'] == 1, 'value'] = np.nan
             data = data.drop(columns=['is_unreliable'])
+        data['value'] = data.groupby('address_uuid')['value'].transform(lambda x: x.interpolate(method='linear'))
         data.to_csv(destination, index=False,sep=";",decimal='.')
     elif upload.file_type == FileType.temperature.value:
         destination = prepared_dir / "temperature_prepared.csv"

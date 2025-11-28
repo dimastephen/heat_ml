@@ -1,0 +1,27 @@
+.mainArea {
+  display: grid;
+  grid-template-rows: var(--header-height) 1fr;
+  background: rgba(4, 6, 16, 0.6);
+  min-height: 100vh;
+}
+
+.tabs {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 24px;
+}
+
+.tab,
+.activeTab {
+  padding: 10px 16px;
+  border-radius: 999px;
+  font-weight: 500;
+  color: var(--color-text-muted);
+  background: rgba(255, 255, 255, 0.05);
+  text-decoration: none;
+}
+
+.activeTab {
+  color: #04110a;
+  background: var(--color-primary);
+}
