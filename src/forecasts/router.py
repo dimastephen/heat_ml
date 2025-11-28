@@ -2,7 +2,14 @@ from uuid import UUID
 
 from fastapi import APIRouter, Depends, Query
 
-from src.forecasts.schemas import ForecastCreate, ForecastRead, ForecastList, ForecastSeriesResponse
+from src.forecasts.schemas import (
+    ForecastCreate,
+    ForecastRead,
+    ForecastList,
+    ForecastSeriesResponse,
+    ForecastHouseSummaryList,
+    ForecastHouseSeriesResponse,
+)
 from src.forecasts.service import IForecastService
 from src.forecasts.deps import get_forecast_service
 from src.users.schemas import UserRead
@@ -47,3 +54,23 @@ def get_forecast_series(
     service: IForecastService = Depends(get_forecast_service),
 ):
     return service.get_series(job_id, current_user.id, limit=limit)
+
+
+@forecasts_router.get("/{job_id}/houses", response_model=ForecastHouseSummaryList)
+def list_forecast_houses(
+    job_id: UUID,
+    current_user: UserRead = Depends(get_current_user),
+    service: IForecastService = Depends(get_forecast_service),
+):
+    return service.list_house_summaries(job_id, current_user.id)
+
+
+@forecasts_router.get("/{job_id}/houses/{house_id}", response_model=ForecastHouseSeriesResponse)
+def get_house_series(
+    job_id: UUID,
+    house_id: str,
+    limit: int = Query(500, ge=1, le=5000),
+    current_user: UserRead = Depends(get_current_user),
+    service: IForecastService = Depends(get_forecast_service),
+):
+    return service.get_house_series(job_id, house_id, current_user.id, limit=limit)

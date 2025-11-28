@@ -1,14 +1,16 @@
 from fastapi import Depends
 from sqlalchemy.orm import Session
 
-from src.database import get_pg_db
+from src.database import get_pg_db, get_ts_db
 from src.forecasts.repository import (
     IForecastJobRepository,
     ForecastJobRepository,
     IForecastSeriesRepository,
     ForecastSeriesRepository,
+    IForecastHouseSeriesRepository,
+    ForecastHouseSeriesRepository,
 )
-from src.forecasts.models import ForecastJob, ForecastSeries
+from src.forecasts.models import ForecastJob, ForecastSeries, ForecastHouseSeries
 from src.forecasts.service import IForecastService, ForecastService
 from src.files.repository import IIngestionBatchRepository
 from src.files.deps import get_batch_repo
@@ -18,13 +20,18 @@ def get_forecast_job_repo(db: Session = Depends(get_pg_db)) -> IForecastJobRepos
     return ForecastJobRepository(db, ForecastJob)
 
 
-def get_forecast_series_repo(db: Session = Depends(get_pg_db)) -> IForecastSeriesRepository:
+def get_forecast_series_repo(db: Session = Depends(get_ts_db)) -> IForecastSeriesRepository:
     return ForecastSeriesRepository(db, ForecastSeries)
+
+
+def get_forecast_house_series_repo(db: Session = Depends(get_ts_db)) -> IForecastHouseSeriesRepository:
+    return ForecastHouseSeriesRepository(db, ForecastHouseSeries)
 
 
 def get_forecast_service(
     job_repo: IForecastJobRepository = Depends(get_forecast_job_repo),
     series_repo: IForecastSeriesRepository = Depends(get_forecast_series_repo),
+    house_series_repo: IForecastHouseSeriesRepository = Depends(get_forecast_house_series_repo),
     batch_repo: IIngestionBatchRepository = Depends(get_batch_repo),
 ) -> IForecastService:
-    return ForecastService(job_repo, series_repo, batch_repo)
+    return ForecastService(job_repo, series_repo, house_series_repo, batch_repo)

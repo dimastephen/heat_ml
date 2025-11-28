@@ -40,3 +40,22 @@ class ForecastSeriesPoint(BaseModel):
 class ForecastSeriesResponse(BaseModel):
     job_id: UUID
     points: list[ForecastSeriesPoint] = Field(default_factory=list)
+
+
+class ForecastHouseSummary(BaseModel):
+    house_id: str
+    total: float
+    average: float
+    peak: float
+    date_start: datetime | None = None
+    date_end: datetime | None = None
+
+
+class ForecastHouseSummaryList(BaseModel):
+    items: list[ForecastHouseSummary] = Field(default_factory=list)
+
+
+class ForecastHouseSeriesResponse(BaseModel):
+    job_id: UUID
+    house_id: str
+    points: list[ForecastSeriesPoint] = Field(default_factory=list)

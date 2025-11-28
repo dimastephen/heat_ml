@@ -1,22 +1,154 @@
 services:
+  app:
+    build: .
+    container_name: heatml-api
+    command: ["uvicorn", "src.main:app", "--host", "0.0.0.0", "--port", "8000"]
+    env_file: .env
+    environment:
+      POSTGRES_URL: postgresql+psycopg2://app:app@db:5432/appdb
+      TIMESCALEDB_URL: postgresql+psycopg2://ts:ts@timescaledb:5432/tsdb
+      REDIS_URL: redis://redis:6379/0
+      FILE_STORAGE_PATH: /data/uploads
+      FILE_PREPARED_PATH: /data/prepared
+      MODEL_STORAGE_PATH: /data/models
+      REPORT_OUTPUT_PATH: /data/reports
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      timescaledb:
+        condition: service_healthy
+      migrate:
+        condition: service_completed_successfully
+    ports:
+      - "8000:8000"
+    volumes:
+      - appdata:/data
+
+  worker-files:
+    build: .
+    container_name: heatml-worker-files
+    command: ["python", "-m", "src.files.file_worker"]
+    env_file: .env
+    environment:
+      POSTGRES_URL: postgresql+psycopg2://app:app@db:5432/appdb
+      TIMESCALEDB_URL: postgresql+psycopg2://ts:ts@timescaledb:5432/tsdb
+      REDIS_URL: redis://redis:6379/0
+      FILE_STORAGE_PATH: /data/uploads
+      FILE_PREPARED_PATH: /data/prepared
+      MODEL_STORAGE_PATH: /data/models
+      REPORT_OUTPUT_PATH: /data/reports
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      timescaledb:
+        condition: service_healthy
+      migrate:
+        condition: service_completed_successfully
+    volumes:
+      - appdata:/data
+
+  worker-forecasts:
+    build: .
+    container_name: heatml-worker-forecasts
+    command: ["python", "-m", "src.forecasts.worker"]
+    env_file: .env
+    environment:
+      POSTGRES_URL: postgresql+psycopg2://app:app@db:5432/appdb
+      TIMESCALEDB_URL: postgresql+psycopg2://ts:ts@timescaledb:5432/tsdb
+      REDIS_URL: redis://redis:6379/0
+      FILE_STORAGE_PATH: /data/uploads
+      FILE_PREPARED_PATH: /data/prepared
+      MODEL_STORAGE_PATH: /data/models
+      REPORT_OUTPUT_PATH: /data/reports
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      timescaledb:
+        condition: service_healthy
+      migrate:
+        condition: service_completed_successfully
+    volumes:
+      - appdata:/data
+
   db:
     image: postgres:17
+    container_name: heatml-postgres
     environment:
       POSTGRES_DB: appdb
       POSTGRES_USER: app
       POSTGRES_PASSWORD: app
     ports:
       - "5432:5432"
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U app -d appdb" ]
+      interval: 5s
+      timeout: 5s
+      retries: 5
     volumes:
       - pgdata:/var/lib/postgresql/data
 
   redis:
     image: redis:7
+    container_name: heatml-redis
     ports:
       - "6379:6379"
+    healthcheck:
+      test: [ "CMD-SHELL", "redis-cli ping | grep PONG" ]
+      interval: 1s
+      timeout: 3s
+      retries: 5
     volumes:
       - redisdata:/data
+
+  timescaledb:
+    image: timescale/timescaledb:2.15.2-pg15
+    container_name: heatml-timescaledb
+    environment:
+      POSTGRES_DB: tsdb
+      POSTGRES_USER: ts
+      POSTGRES_PASSWORD: ts
+      TIMESCALEDB_TELEMETRY: "off"
+    ports:
+      - "5433:5432"
+    volumes:
+      - timescale-data:/var/lib/postgresql/data
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U ts -d tsdb" ]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  migrate:
+    build: .
+    container_name: heatml-migrate
+    command: ["alembic", "upgrade", "head"]
+    env_file: .env
+    environment:
+      POSTGRES_URL: postgresql+psycopg2://app:app@db:5432/appdb
+      TIMESCALEDB_URL: postgresql+psycopg2://ts:ts@timescaledb:5432/tsdb
+    depends_on:
+      db:
+        condition: service_healthy
+
+  frontend:
+    build:
+      context: ./frontend
+    container_name: heatml-frontend
+    depends_on:
+      - app
+    ports:
+      - "5173:80"
+    environment:
+      VITE_API_PROXY: "http://app:8000"
 
 volumes:
   pgdata:
   redisdata:
+  timescale-data:
+  appdata:
