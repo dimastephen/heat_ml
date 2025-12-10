@@ -2,7 +2,7 @@ from redis import Redis
 from rq import Worker, Queue
 
 from src.config import settings
-from src.forecasts import tasks  # noqa: F401  # ensure tasks are imported
+from src.forecasts import tasks
 
 
 def run():

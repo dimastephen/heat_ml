@@ -28,7 +28,6 @@ from src.forecasts.repository import (
 )
 
 
-# Константы
 DEFAULT_SEQ_LEN = 60
 DEFAULT_EPOCHS = 60
 DEFAULT_BATCH_SIZE = 64
@@ -94,7 +93,6 @@ def run_forecast(job_id: UUID):
         address_uuids = data["address_uuid"].unique().tolist()
         logger.info("Unique houses detected", extra={"houses": len(address_uuids)})
 
-        # Получаем прогноз погоды один раз для всех домов на следующий сезон
         last_date = data["date"].max()
         start_season, end_season, future_dates = get_next_heating_season_range(last_date)
         weather_df = fetch_visualcrossing_daily(
@@ -182,7 +180,7 @@ def run_forecast(job_id: UUID):
                     "House forecast ready",
                     extra={"job_id": str(job.id), "house": addr, "points": len(y_future)},
                 )
-            except Exception as exc:  # noqa: BLE001
+            except Exception as exc:
                 logger.exception("Ошибка прогноза для дома %s", addr)
                 forecasts[addr] = {"error": str(exc)}
 
@@ -255,7 +253,7 @@ def run_forecast(job_id: UUID):
             "Forecast completed",
             extra={"job_id": str(job.id), "points": len(series_payload), "houses": len(house_list)},
         )
-    except Exception as exc:  # noqa: BLE001
+    except Exception as exc:
         logger.exception("Forecast failed", extra={"job_id": str(job_id)})
         job_repo.update(job, {
             "status": ForecastStatus.failed.value,
@@ -267,9 +265,7 @@ def run_forecast(job_id: UUID):
             ts_db.close()
 
 def load_prepared_data(csv_path: str) -> pd.DataFrame:
-    """
-    Читает prepared_dataset.csv, приводит date и сортирует по дому/дате.
-    """
+    """Read prepared dataset and sort by house/date."""
     data = pd.read_csv(csv_path, sep=";", decimal=".")
     data["date"] = pd.to_datetime(data["date"], errors="coerce")
     data = data.dropna(subset=["date"])
@@ -278,10 +274,7 @@ def load_prepared_data(csv_path: str) -> pd.DataFrame:
 
 
 def add_encoded_features(data: pd.DataFrame) -> Tuple[pd.DataFrame, List[str]]:
-    """
-    Кодирует wall_type и address_uuid, добавляет house_id.
-    Возвращает (обновлённый DataFrame, список признаков feature_cols).
-    """
+    """Encode categorical features and return feature list."""
     numeric_features = [
         "temp_avg", "humidity_avg",
         "build_year", "floor_number",
@@ -311,21 +304,12 @@ def add_encoded_features(data: pd.DataFrame) -> Tuple[pd.DataFrame, List[str]]:
     return data, feature_cols
 
 
-# ==========================
-# 2. Скейлеры и последовательности
-# ==========================
-
 def fit_global_scalers(
     data: pd.DataFrame,
     feature_cols: List[str],
     sequence_length: int = DEFAULT_SEQ_LEN,
 ) -> Tuple[MinMaxScaler, MinMaxScaler, np.ndarray, np.ndarray]:
-    """
-    По каждому дому берёт первые 80% строк как train (в "сырых" рядах).
-    На этих строках фитит скейлеры для X и y.
-    Возвращает:
-        scaler_X, scaler_y, X_all_scaled, y_all_scaled
-    """
+    """Fit global scalers and return scaled arrays."""
     X_all_raw = data[feature_cols].values
     y_all_raw = data[["value"]].values
 
@@ -358,10 +342,6 @@ def create_sequences_for_house(
     y_scaled: np.ndarray,
     seq_len: int,
 ) -> Tuple[np.ndarray, np.ndarray]:
-    """
-    house_df — строки по одному дому (отсортировано по дате), в нём есть row_idx.
-    X_scaled, y_scaled — глобальные массивы по всем домам.
-    """
     idx = house_df["row_idx"].to_numpy()
     X_house = X_scaled[idx]
     y_house = y_scaled[idx]
@@ -383,10 +363,7 @@ def build_train_test_sets(
     y_all: np.ndarray,
     seq_len: int = DEFAULT_SEQ_LEN,
 ):
-    """
-    Формирует X_train, y_train, X_test, y_test по всем домам,
-    а также словарь per_house_data с разрезом по каждому дому.
-    """
+    """Build train/test arrays and per-house data."""
     X_train_list, y_train_list = [], []
     X_test_list, y_test_list = [], []
     per_house_data: Dict[str, Dict[str, np.ndarray]] = {}
@@ -429,10 +406,6 @@ def build_train_test_sets(
     return X_train, y_train, X_test, y_test, per_house_data
 
 
-# ==========================
-# 3. Модель
-# ==========================
-
 def build_lstm_model(seq_len: int, n_features: int) -> tf.keras.Model:
     model = Sequential([
         LSTM(64, return_sequences=True, input_shape=(seq_len, n_features)),
@@ -444,10 +417,6 @@ def build_lstm_model(seq_len: int, n_features: int) -> tf.keras.Model:
     return model
 
 
-# ==========================
-# 4. Visual Crossing API (формат под модель)
-# ==========================
-
 def fetch_visualcrossing_daily(
     api_key: str,
     location: str,
@@ -455,10 +424,7 @@ def fetch_visualcrossing_daily(
     end_date: str,
     unit_group: str = "metric",
 ) -> pd.DataFrame:
-    """
-    Забирает дневные данные погоды с Visual Crossing Timeline API
-    и возвращает DataFrame с колонками: date, temp_avg, humidity_avg.
-    """
+    """Fetch daily weather data from Visual Crossing."""
     base_url = "https://weather.visualcrossing.com/VisualCrossingWebServices/rest/services/timeline"
     url = f"{base_url}/{location}/{start_date}/{end_date}"
 
@@ -485,15 +451,8 @@ def fetch_visualcrossing_daily(
     return df
 
 
-# ==========================
-# 5. Логика отопительного сезона
-# ==========================
-
 def get_current_heating_season_year(last_date: pd.Timestamp) -> int:
-    """
-    Возвращает год, которым обозначаем текущий отопительный сезон.
-    Сезон: 1 октября N — 30 апреля N+1.
-    """
+    """Return heating season year for given date."""
     if last_date.month > 10 or (last_date.month == 10 and last_date.day >= 1):
         return last_date.year
     else:
@@ -501,12 +460,7 @@ def get_current_heating_season_year(last_date: pd.Timestamp) -> int:
 
 
 def get_next_heating_season_range(last_date: pd.Timestamp):
-    """
-    По последней дате данных возвращает:
-    - start (Timestamp) — начало следующего отопительного сезона (1 октября)
-    - end   (Timestamp) — конец следующего сезона (30 апреля)
-    - future_dates (DatetimeIndex) — все дни этого сезона.
-    """
+    """Return start/end and date range for next heating season."""
     current_season_year = get_current_heating_season_year(last_date)
     next_season_year = current_season_year + 1
 
@@ -514,11 +468,6 @@ def get_next_heating_season_range(last_date: pd.Timestamp):
     end = pd.Timestamp(f"{next_season_year + 1}-04-30")
     future_dates = pd.date_range(start, end, freq="D")
     return start, end, future_dates
-
-
-# ==========================
-# 6. Прогноз сезона с API для одного дома
-# ==========================
 
 def forecast_next_heating_season_with_api(
     model: tf.keras.Model,
@@ -534,10 +483,7 @@ def forecast_next_heating_season_with_api(
     weather_df: pd.DataFrame | None = None,
     future_dates: pd.DatetimeIndex | None = None,
 ):
-    """
-    Строит прогноз тепловой нагрузки на следующий отопительный сезон для одного дома,
-    используя прогноз погоды из Visual Crossing.
-    """
+    """Forecast next heating season for a single house."""
     house_df = data[data["address_uuid"] == address_uuid].copy()
     if house_df.empty:
         raise ValueError(f"Дом {address_uuid} не найден в данных.")
@@ -545,11 +491,9 @@ def forecast_next_heating_season_with_api(
     house_df = house_df.sort_values("date").reset_index(drop=True)
     last_date = house_df["date"].max()
 
-    # 1. Даты следующего сезона
     if future_dates is None:
         start, end, future_dates = get_next_heating_season_range(last_date)
     else:
-        # Быстрый контроль: убедимся, что будущие даты идут подряд
         if not isinstance(future_dates, pd.DatetimeIndex):
             future_dates = pd.DatetimeIndex(future_dates)
         expected_range = pd.date_range(future_dates[0], future_dates[-1], freq="D")
@@ -557,7 +501,6 @@ def forecast_next_heating_season_with_api(
             raise ValueError("Полученный диапазон дат будущего сезона некорректен или содержит пропуски.")
     n_future = len(future_dates)
 
-    # 2. Прогноз погоды (один раз, если передали готовые данные)
     if weather_df is None:
         weather_df = fetch_visualcrossing_daily(
             api_key=api_key,
@@ -581,7 +524,6 @@ def forecast_next_heating_season_with_api(
     temp_future = weather_local["temp_avg"].to_numpy()
     humidity_future = weather_local["humidity_avg"].to_numpy()
 
-    # 3. Статика дома
     last_row = house_df.iloc[-1]
     static_values = {
         "build_year": last_row["build_year"],
@@ -591,17 +533,15 @@ def forecast_next_heating_season_with_api(
         "roof_area_total": last_row["roof_area_total"],
         "roof_area_web": last_row["roof_area_web"],
         "roof_area_piece_goods": last_row["roof_area_piece_goods"],
-        "wall_type": last_row["wall_type"],   # уже закодированный LabelEncoder
-        "house_id": last_row["house_id"],     # уже закодированный LabelEncoder
+        "wall_type": last_row["wall_type"],
+        "house_id": last_row["house_id"],
     }
 
-    # 4. day_sin/day_cos
     day_of_season = np.arange(1, n_future + 1)
     season_len = n_future
     day_sin_future = np.sin(2 * np.pi * day_of_season / season_len)
     day_cos_future = np.cos(2 * np.pi * day_of_season / season_len)
 
-    # 5. future_df с фичами
     future_df = pd.DataFrame({
         "date": future_dates,
         "address_uuid": address_uuid,
@@ -615,7 +555,6 @@ def forecast_next_heating_season_with_api(
 
     future_features = future_df[feature_cols]
 
-    # 6. исторический хвост
     if len(house_df) < seq_len:
         raise ValueError(f"Для дома {address_uuid} недостаточно истории (< {seq_len} точек).")
 
@@ -625,7 +564,6 @@ def forecast_next_heating_season_with_api(
     combined_features = pd.concat([history_features, future_features], axis=0)
     X_combined_scaled = scaler_X.transform(combined_features.values)
 
-    # 7. sliding window по будущему сезону
     X_future_seq = []
     for i in range(n_future):
         window = X_combined_scaled[i: i + seq_len]

@@ -29,7 +29,6 @@ def get_pg_db() -> Generator[Session,None,None]:
 
 def get_ts_db() -> Generator[Session, None, None]:
     if TsSessionLocal is None:
-        # Fallback to primary Postgres if Timescale is not configured
         yield from get_pg_db()
         return
     db = TsSessionLocal()

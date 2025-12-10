@@ -87,7 +87,6 @@ class ForecastService(IForecastService):
             "created_at": now_utc,
             "updated_at": now_utc,
         })
-        # Без явного ограничения времени задачи (используется глобальный default RQ или бесконечность)
         forecast_queue.enqueue(tasks.run_forecast, job.id, job_timeout=-1)
         return ForecastRead.model_validate(job)
 

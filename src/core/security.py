@@ -39,7 +39,6 @@ def create_refresh_token(data: Dict[str, Any]) -> str:
     return create_token(data, expires_delta, "refresh")
 
 
-# Хэш и валидация пароля
 ph = PasswordHasher()
 
 
