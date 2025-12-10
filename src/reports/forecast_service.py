@@ -6,14 +6,14 @@ from typing import Sequence
 import matplotlib
 
 matplotlib.use("Agg")
-import matplotlib.pyplot as plt  # noqa: E402
+import matplotlib.pyplot as plt
 from importlib import resources
 
-from reportlab.lib.pagesizes import A4  # noqa: E402
-from reportlab.lib.units import cm  # noqa: E402
-from reportlab.pdfbase import pdfmetrics  # noqa: E402
-from reportlab.pdfbase.ttfonts import TTFont  # noqa: E402
-from reportlab.pdfgen import canvas  # noqa: E402
+from reportlab.lib.pagesizes import A4
+from reportlab.lib.units import cm
+from reportlab.pdfbase import pdfmetrics
+from reportlab.pdfbase.ttfonts import TTFont
+from reportlab.pdfgen import canvas
 
 from src.config import settings
 from src.core.errors import NotFoundError
@@ -130,7 +130,6 @@ class ForecastReportService:
         if chart_path.exists():
             c.drawImage(str(chart_path), 2 * cm, 2 * cm, width=16 * cm, height=8 * cm, preserveAspectRatio=True)
 
-        # Графики по домам на отдельных страницах
         for house, h_chart in house_charts:
             c.showPage()
             c.setFont(bold_font, 12)
@@ -149,10 +148,6 @@ class ForecastReportService:
 
 
 def _ensure_cyrillic_font() -> tuple[str, str]:
-    """
-    Пытаемся зарегистрировать DejaVuSans/DejaVuSans-Bold (кириллица).
-    Если не получилось — возвращаем Helvetica.
-    """
     try:
         import matplotlib.font_manager as fm
 
@@ -160,24 +155,23 @@ def _ensure_cyrillic_font() -> tuple[str, str]:
             try:
                 path = Path(fm.findfont(name, fallback_to_default=False, weight=weight))
                 return path if path.exists() else None
-            except Exception:  # noqa: BLE001
+            except Exception:
                 return None
 
         regular = _find_font("DejaVu Sans")
         bold = _find_font("DejaVu Sans", weight="bold")
 
-        # fallback: взять из mpl-data
         if not regular:
             try:
                 with resources.path("matplotlib", "mpl-data/fonts/ttf/DejaVuSans.ttf") as p:
                     regular = Path(p)
-            except Exception:  # noqa: BLE001
+            except Exception:
                 regular = None
         if not bold:
             try:
                 with resources.path("matplotlib", "mpl-data/fonts/ttf/DejaVuSans-Bold.ttf") as p:
                     bold = Path(p)
-            except Exception:  # noqa: BLE001
+            except Exception:
                 bold = None
 
         if regular:
@@ -193,7 +187,7 @@ def _ensure_cyrillic_font() -> tuple[str, str]:
                 boldItalic="DejaVuSans-Bold" if bold else "DejaVuSans",
             )
             return "DejaVuSans", "DejaVuSans-Bold" if bold else "DejaVuSans"
-    except Exception:  # noqa: BLE001
+    except Exception:
         pass
 
     return "Helvetica", "Helvetica-Bold"

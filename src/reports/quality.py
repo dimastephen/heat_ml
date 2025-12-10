@@ -53,5 +53,5 @@ def _normalize_datetime(value: Any) -> str | None:
         if pd.isna(ts):
             return None
         return ts.isoformat()
-    except Exception:  # noqa: BLE001
+    except Exception:
         return None

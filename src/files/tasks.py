@@ -1,4 +1,3 @@
-import logging
 import shutil
 import pandas as pd
 import numpy as np
@@ -17,21 +16,18 @@ from src.files.models import (
     BatchStatus,
     REQUIRED_FILE_TYPES,
 )
+from src.core.logger import logger
 from src.files.repository import FileUploadRepository, IngestionBatchRepository
 from src.reports.models import DataQualityReport
 from src.reports.repository import DataQualityReportRepository
 from src.reports.quality import build_quality_metrics
 
-logger = logging.getLogger(__name__)
 
 redis_conn = Redis.from_url(settings.REDIS_URL)
 merge_queue = Queue("datasets", connection=redis_conn)
 
 
 def process_upload(upload_id: UUID):
-    """
-    Валидация и подготовка отдельного файла (houses/consumption/temperature).
-    """
     db = PgSessionLocal()
     file_repo = FileUploadRepository(db, FileUpload)
     batch_repo = IngestionBatchRepository(db, IngestionBatch)
@@ -53,7 +49,7 @@ def process_upload(upload_id: UUID):
         })
         logger.info("Upload processed", extra={"upload_id": str(upload_id), "file_type": upload.file_type})
         _maybe_schedule_merge(batch_repo, file_repo, upload.batch_id)
-    except Exception as exc:  # noqa: BLE001
+    except Exception as exc:
         logger.exception("Upload processing failed", extra={"upload_id": str(upload_id)})
         file_repo.update(upload, {
             "status": "failed",
@@ -71,7 +67,7 @@ def process_upload(upload_id: UUID):
 
 def merge_batch(batch_id: UUID):
     """
-    Объединение трёх подготовленных файлов в единый датасет (заглушка).
+    Объединение трёх подготовленных файлов.
     """
 
     db = PgSessionLocal()
@@ -101,14 +97,11 @@ def merge_batch(batch_id: UUID):
         data['date'] = pd.to_datetime(data['date'], errors='coerce')
         data = data.sort_values(['address_uuid', 'date'])
 
-        # отопительный год: с 1 октября по 30 апреля
         data['heating_year'] = data['date'].dt.year
         data.loc[data['date'].dt.month < 10, 'heating_year'] -= 1
 
-        # начало сезона = 1 октября соответствующего отопительного года
         season_start = pd.to_datetime(data['heating_year'].astype(str) + '-10-01',errors='coerce')
 
-        # номер дня сезона
         data['day_of_season'] = (data['date'] - season_start).dt.days + 1
         data['day_sin'] = np.sin(2 * np.pi * data['day_of_season'] / 212)
         data['day_cos'] = np.cos(2 * np.pi * data['day_of_season'] / 212)
@@ -147,7 +140,7 @@ def merge_batch(batch_id: UUID):
             "errors": [],
         })
         logger.info("Batch merged", extra={"batch_id": str(batch_id)})
-    except Exception as exc:  # noqa: BLE001
+    except Exception as exc:
         logger.exception("Batch merge failed", extra={"batch_id": str(batch_id)})
         batch_repo.update(batch, {
             "status": BatchStatus.failed.value,
@@ -170,7 +163,6 @@ def _process_file(upload: FileUpload) -> Path:
         destination = prepared_dir / "consumption_prepared.csv"
         data = pd.read_csv(raw_path,sep=';',decimal='.')
         if 'is_unreliable' in data.columns:
-            # Маскируем недостоверные значения, чтобы не влияли на интерполяцию
             data.loc[data['is_unreliable'] == 1, 'value'] = np.nan
             data = data.drop(columns=['is_unreliable'])
         data['value'] = data.groupby('address_uuid')['value'].transform(lambda x: x.interpolate(method='linear'))
@@ -218,14 +210,11 @@ def _prepared_dir(batch_id: UUID) -> Path:
 
 
 def get_heating_day(row):
-    # Начало отопительного сезона (1 октября)
     year_start = pd.Timestamp(f'{row.year}-10-01')
 
-    # Если дата до 1 октября, то отопительный сезон был в прошлом году
     if row < year_start:
         year_start = pd.Timestamp(f'{row.year - 1}-10-01')
 
-    # Возвращаем количество дней с начала отопительного сезона
     return (row - year_start).days + 1
 
 
@@ -238,28 +227,22 @@ def IQR_check(data: pd.DataFrame) -> pd.DataFrame:
     Q3 = value_series.quantile(0.75)
     IQR = Q3 - Q1
 
-    # Определяем границы выбросов
     lower_bound = Q1 - 1.5 * IQR
     upper_bound = Q3 + 1.5 * IQR
 
-    # Определяем выбросы как значения, выходящие за пределы IQR и добавляем условие что значение не может быть ниже 0
     data['is_anomaly'] = ((data['value'] < lower_bound) | (data['value'] > upper_bound) | (data['value'] < 0))
 
-    # Отбираем нормальные данные
     normal_data = data[~data['is_anomaly']].dropna(subset=['temp_avg', 'humidity_avg', 'value'])
     outlier_data = data[data['is_anomaly']]
 
     if len(normal_data) < 10:
-        # слишком мало данных — просто возвращаем без замены выбросов
         return data
 
-    # Обучение регрессии на нормальных данных
-    X_train = normal_data[['temp_avg', 'humidity_avg']]  # Другие признаки, которые объясняют 'value'
+    X_train = normal_data[['temp_avg', 'humidity_avg']]
     y_train = normal_data['value']
     model = LinearRegression()
     model.fit(X_train, y_train)
 
-    # Замена выбросов предсказанными значениями
     X_outliers = outlier_data[['temp_avg', 'humidity_avg']]
     data.loc[data['is_anomaly'], 'value'] = model.predict(X_outliers)
     return data

@@ -1,4 +1,3 @@
-# src/users/router.py
 from fastapi import APIRouter, Depends
 from fastapi.security import OAuth2PasswordRequestForm
 
